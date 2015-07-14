@@ -19,7 +19,7 @@ public class Djinn {
 	public EntityPlayer thePlayer;
 	public EntityBall theBall;
 	public EntityDivider theDivider;
-	public static ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
+	public ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
 	public ArrayList<EntityShot> ShotList = new ArrayList<EntityShot>();
 	public World theWorld;
 	
@@ -35,16 +35,12 @@ public class Djinn {
 		instance.theBall = new EntityBall(instance);
 		instance.theDivider = new EntityDivider(instance);
 		
-		// add enemies
+		// Add enemies
 		for (int row=0;row<7;row++) {
 			for (int col=0;col<9;col++){
-				Djinn.EnemyList.add(new EntityEnemy(instance,instance.displayWidth/7+instance.displayWidth/9*row,28F+28F*col));
+				instance.EnemyList.add(new EntityEnemy(instance,instance.displayWidth/7+instance.displayWidth/9*row,28F+28F*col));
 			}
 		}
-		
-//		for (int EntityEnemy = 0; EntityEnemy < EnemyList.size(); EntityEnemy++) {
-//			instance.ShotList.add(new EntityShot(instance,Djinn.EnemyList.get(EntityEnemy).posX+Djinn.EnemyList.get(EntityEnemy).width/2,Djinn.EnemyList.get(EntityEnemy).posY));
-//		}
 		
 		instance.theWorld = new World(instance);	
 		

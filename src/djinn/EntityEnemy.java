@@ -20,7 +20,6 @@ public class EntityEnemy extends Entity {
 		this.maxDistLeft = (int) (width*2);
 		this.maxDistRight = (int) (width*2);
 		this.lastCollision = 0;
-		this.alienIsShot = false;
 		
 		this.keyLeft = new Keybind(Keyboard.KEY_A, "Left");
 		this.keyRight = new Keybind(Keyboard.KEY_D, "Right");
@@ -55,7 +54,7 @@ public class EntityEnemy extends Entity {
 		
 		if (collision && djinn.getSystemTime()-this.lastCollision>1000) {
 			djinn.theBall.bounceY();
-			this.alienIsShot = true;
+			djinn.theWorld.entitiesToBeRemoved.add(this);
 			this.lastCollision = djinn.getSystemTime();
 		}
 	}

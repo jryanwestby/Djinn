@@ -20,7 +20,7 @@ public class Entity {
 		this.motionY = 0;
 		this.width = 14F;
 		this.height = 14F;
-		this.speed = 10.0F;
+		this.speed = 12.0F;
 		this.rect = new Rectangle();
 		this.setBounds();
 		this.gui = new Gui();
