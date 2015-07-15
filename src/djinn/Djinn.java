@@ -23,6 +23,8 @@ public class Djinn {
 	public ArrayList<EntityShot> ShotList = new ArrayList<EntityShot>();
 	public World theWorld;
 	
+	//public int numEnemies;
+	
 	public static void main(String[] args) {
 		init();
 		gameLoop();
@@ -36,9 +38,11 @@ public class Djinn {
 		instance.theDivider = new EntityDivider(instance);
 		
 		// Add enemies
-		for (int row=0;row<7;row++) {
-			for (int col=0;col<9;col++){
-				instance.EnemyList.add(new EntityEnemy(instance,instance.displayWidth/7+instance.displayWidth/9*row,28F+28F*col));
+		for (int row=0;row<6;row++) {
+			for (int col=0;col<4;col++){
+				int offsetX = Djinn.getRandRange(-30, 30);
+				int offsetY = Djinn.getRandRange(-30, 30);
+				instance.EnemyList.add(new EntityEnemy(instance,60F+instance.displayWidth/5*row+offsetX,60F+70F*col+offsetY));
 			}
 		}
 		

@@ -11,7 +11,7 @@ public class EntityBall extends Entity{
 	
 	public EntityBall(Djinn djinn) {
 		super(djinn);
-		this.speed /= 2;
+		this.speed /= 2F;
 		this.posX = djinn.thePlayer.posX + (djinn.thePlayer.width/2);
 		this.posY = djinn.thePlayer.posY - this.height; // sets ball at top half of screen
 		this.lastCollision = 0;
@@ -34,11 +34,28 @@ public class EntityBall extends Entity{
 		if (this.posY<0) this.bounceY();
 		if (this.posY+this.height>djinn.displayHeight) this.bounceY();
 		
-		boolean collision = this.rect.intersects(djinn.thePlayer.rect) || this.rect.intersects(djinn.theDivider.rect);
-		
-		if (collision && djinn.getSystemTime()-this.lastCollision>100) {
+		boolean collisionWithPlayer = this.rect.intersects(djinn.thePlayer.rect);		
+		if (collisionWithPlayer && djinn.getSystemTime()-this.lastCollision>1000) {
 			this.bounceY();
+			
+//			if (this.posX+this.width/2 > djinn.thePlayer.posX+djinn.thePlayer.width/3 &&
+//				this.posX+this.width/2 < djinn.thePlayer.posX+djinn.thePlayer.width*2/3) {
+//				this.speed /= 1.5F;
+//				System.out.println(1 + " Speed:" + this.speed);
+//			}
+//			else {
+//				this.speed *= 1.5F;
+//				System.out.println(0 + " Speed:" + this.speed);
+//			}
 			this.lastCollision = djinn.getSystemTime();
+		}
+		
+		boolean collisionWithDivider = this.rect.intersects(djinn.theDivider.rect);
+		if (collisionWithDivider) {
+			this.gameStart = false;
+			djinn.thePlayer.width -= 2;	
+			this.posX = djinn.thePlayer.posX + (djinn.thePlayer.width/2);
+			this.posY = djinn.thePlayer.posY - this.height;
 		}
 	}
 	
@@ -56,6 +73,7 @@ public class EntityBall extends Entity{
 		if (!gameStart){
 			this.motionX = 0;
 			this.motionY = 0;
+			this.speed = 6.0F;
 			
 			if (this.keyLeft.isKeyDown() || this.keyRight.isKeyDown()) this.posX = djinn.thePlayer.posX + (djinn.thePlayer.width/2);
 		}

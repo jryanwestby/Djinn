@@ -7,10 +7,9 @@ public class EntityShot extends Entity {
 	public EntityShot(Djinn djinn, float x, float y) {
 		super(djinn);
 		
-		this.motionY = (float) this.speed/1.2F;
+		this.motionY = (float) this.speed/2.5F;
 		this.posX = x;
 		this.posY = y;
-		this.shotToBeRemoved = false;
 	}
 	
 	@Override
@@ -28,12 +27,11 @@ public class EntityShot extends Entity {
 		
 		boolean collisionWithPlayer = this.rect.intersects(djinn.thePlayer.rect);
 		if (collisionWithPlayer) {
-			djinn.thePlayer.width -= 8;		
+			djinn.thePlayer.width -= 2;		
 		}
 		
 		boolean collisionWithBall = this.rect.intersects(djinn.theBall.rect);
 		if (collisionWithBall) {
-			djinn.theBall.bounceX();
 			djinn.theWorld.entitiesToBeRemoved.add(this);
 		}
 	}

@@ -9,8 +9,9 @@ public class EntityPlayer extends Entity {
 	public EntityPlayer(Djinn djinn) {
 		super(djinn);
 		this.posX = 16F;
-		this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
-		this.width *= 5F;
+		this.posY = (djinn.displayHeight/2) - (this.height/2) - 40F;
+		this.width *= 6F;
+		this.speed *= 1.2F;
 		
 		this.keyLeft = new Keybind(Keyboard.KEY_LEFT, "Left");
 		this.keyRight = new Keybind(Keyboard.KEY_RIGHT, "Right");
@@ -20,6 +21,11 @@ public class EntityPlayer extends Entity {
 	public void onUpdate(Djinn djinn) {
 		super.onUpdate(djinn);
 		handleInput(djinn);
+		
+		if (this.width < 1F) {
+			Djinn.isRunning = false; // Game over
+			//TODO Program actual game over notification
+		}
 	}
 
 	private void handleInput(Djinn djinn) {
