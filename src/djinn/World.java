@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class World {
 	public ArrayList<Entity> entities = new ArrayList<Entity>();
+	//public ArrayList<EntityShot> PlayerShotList = new ArrayList<EntityShot>();
+	public ArrayList<EntityEnemyShot> EnemyShotList = new ArrayList<EntityEnemyShot>();
 	public ArrayList<Entity> entitiesToBeRemoved = new ArrayList<Entity>();
 	public int randEnemy;
 	public int initialNumEnemies;
@@ -13,13 +15,12 @@ public class World {
 		this.entities.add(djinn.theBall);
 		this.entities.add(djinn.theDivider);
 		this.entities.addAll(djinn.EnemyList);
-		this.initialNumEnemies = djinn.EnemyList.size()*2;
+		this.initialNumEnemies = djinn.EnemyList.size();
 	}
 	
 	public void run(Djinn djinn) {
-		//TODO fix game crash once EnemyList.size() == 0
 
-		this.addEnemyShot(djinn);
+		this.addEnemyShot(djinn);     
 		
 		for (Entity entity : this.entities) {
 			entity.onUpdate(djinn);			// Update all entities
@@ -32,16 +33,17 @@ public class World {
 	}
 	
 	public void addEnemyShot(Djinn djinn) {
-		if (!djinn.theBall.gameStart) return;
+		if (!djinn.gameStart) return;
 		
-		if (djinn.ShotList.size() > 0) djinn.ShotList.remove(0); // Uninitialize the last shot	
+		if (this.EnemyShotList.size() > 0) this.EnemyShotList.remove(0); // Uninitialize the last shot	
 
 		randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
 		int randNum = getRandRange(0, initialNumEnemies);
 		
-		if (entities.contains(djinn.EnemyList.get(randEnemy)) && randEnemy == randNum ) { // This logic limits the amount of shots being produced
-			djinn.ShotList.add(new EntityShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 			// Initialize a shot from the random enemy
-			this.entities.add(djinn.ShotList.get(0)); 			// Add the initialized shot to the entities ArrayList
+		//TODO fix index out of bounds
+		if (randEnemy == randNum && entities.contains(djinn.EnemyList.get(randEnemy))) { // This logic limits the amount of shots being produced
+			this.EnemyShotList.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 	// Initialize a shot from the random enemy
+			this.entities.add(this.EnemyShotList.get(0)); 			// Add the initialized shot to the entities ArrayList
 		}
 	}
 	

@@ -9,7 +9,7 @@ public class EntityPlayer extends Entity {
 	public EntityPlayer(Djinn djinn) {
 		super(djinn);
 		this.posX = 16F;
-		this.posY = (djinn.displayHeight/2) - (this.height/2) - 40F;
+		this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
 		this.width *= 6F;
 		this.speed *= 1.2F;
 		

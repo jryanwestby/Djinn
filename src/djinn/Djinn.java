@@ -16,38 +16,41 @@ public class Djinn {
 	public int displayWidth = 600;
 	public int displayHeight = 1000;
 	public static boolean isRunning = true;
+	
+	// Entity variables
 	public EntityPlayer thePlayer;
 	public EntityBall theBall;
 	public EntityDivider theDivider;
 	public ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
-	public ArrayList<EntityShot> ShotList = new ArrayList<EntityShot>();
 	public World theWorld;
 	
-	//public int numEnemies;
+	// State variables
+	public boolean gameStart;
 	
 	public static void main(String[] args) {
-		init();
+		initEntities();
+		initDisplay();
 		gameLoop();
 		cleanUp();
 	}
 
-	private static void init() {
+	private static void initEntities() {
 		instance = new Djinn();
 		instance.thePlayer = new EntityPlayer(instance);
 		instance.theBall = new EntityBall(instance);
 		instance.theDivider = new EntityDivider(instance);
 		
 		// Add enemies
-		for (int row=0;row<6;row++) {
-			for (int col=0;col<4;col++){
-				int offsetX = Djinn.getRandRange(-30, 30);
-				int offsetY = Djinn.getRandRange(-30, 30);
-				instance.EnemyList.add(new EntityEnemy(instance,60F+instance.displayWidth/5*row+offsetX,60F+70F*col+offsetY));
+		for (int row=0;row<20;row++) {
+			for (int col=0;col<15;col++){
+				instance.EnemyList.add(new EntityEnemy(instance,2F+30*row,7F+15F*col));
 			}
 		}
 		
-		instance.theWorld = new World(instance);	
-		
+		instance.theWorld = new World(instance);
+	}
+	
+	private static void initDisplay() {
 		try {
 			Display.setDisplayMode(new DisplayMode(instance.displayWidth, instance.displayHeight));
 			Display.setInitialBackground(1.0F, 1.0F, 1.0F);
@@ -69,7 +72,6 @@ public class Djinn {
 			Display.sync(60);
 			Display.update();
 		}
-		
 	}
 	
 	private static void cleanUp() {
@@ -93,6 +95,13 @@ public class Djinn {
 		
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0.4f);
+	}
+	
+	public void gameReset() {
+		instance.gameStart = false;
+		instance.thePlayer.width -= 2;
+		instance.theBall.posX = instance.thePlayer.posX + (instance.thePlayer.width/2);
+		instance.theBall.posY = instance.thePlayer.posY - instance.theBall.height;
 	}
 	
 	public long getSystemTime() {

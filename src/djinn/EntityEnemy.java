@@ -16,7 +16,7 @@ public class EntityEnemy extends Entity {
 		
 		this.posX = x;
 		this.posY = y;
-		this.width *= (float) 1.5;
+		this.width *= (float) 1.8F;
 		this.maxDistLeft = (int) (width*2);
 		this.maxDistRight = (int) (width*2);
 		this.lastCollision = 0;
