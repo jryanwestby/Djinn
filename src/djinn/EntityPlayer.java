@@ -5,6 +5,9 @@ import org.lwjgl.input.Keyboard;
 public class EntityPlayer extends Entity {
 	public Keybind keyLeft;
 	public Keybind keyRight;
+	public Keybind keySpace;
+	public long lastShot;
+	public boolean playerShotReady = false;
 	
 	public EntityPlayer(Djinn djinn) {
 		super(djinn);
@@ -15,12 +18,16 @@ public class EntityPlayer extends Entity {
 		
 		this.keyLeft = new Keybind(Keyboard.KEY_LEFT, "Left");
 		this.keyRight = new Keybind(Keyboard.KEY_RIGHT, "Right");
+		this.keySpace = new Keybind(Keyboard.KEY_SPACE, "Spacebar");
+		
+		this.lastShot = 0;
 	}
 	
 	@Override
 	public void onUpdate(Djinn djinn) {
 		super.onUpdate(djinn);
 		handleInput(djinn);
+		addPlayerShot(djinn);
 		
 		if (this.width < 1F) {
 			Djinn.isRunning = false; // Game over
@@ -34,6 +41,16 @@ public class EntityPlayer extends Entity {
 		
 		if (this.keyLeft.isKeyDown()) this.motionX = -this.speed;
 		if (this.keyRight.isKeyDown()) this.motionX = this.speed;
+		if (this.keySpace.isKeyDown()) this.playerShotReady = true;
+
+	}
+	
+	private void addPlayerShot(Djinn djinn) {
+		if (!djinn.gameStart) return;
+		else if (this.playerShotReady && djinn.getSystemTime()-this.lastShot>1000) {
+			djinn.playerShot = new EntityPlayerShot(djinn, djinn.thePlayer.posX+djinn.thePlayer.width/2, djinn.thePlayer.posY);
+			this.lastShot = djinn.getSystemTime();
+		}
 	}
 	
 	@Override

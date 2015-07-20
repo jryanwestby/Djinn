@@ -3,13 +3,12 @@ package djinn;
 import org.lwjgl.input.Keyboard;
 
 public class EntityEnemy extends Entity {
-	
+
 	public Keybind keyLeft;
 	public Keybind keyRight;
 	public int maxDistLeft;
 	public int maxDistRight;
-	public long lastCollision;
-	public boolean alienIsShot;
+	public int randEnemy;
 	
 	public EntityEnemy(Djinn djinn, float x, float y) {
 		super(djinn);
@@ -19,7 +18,6 @@ public class EntityEnemy extends Entity {
 		this.width *= (float) 1.8F;
 		this.maxDistLeft = (int) (width*2);
 		this.maxDistRight = (int) (width*2);
-		this.lastCollision = 0;
 		
 		this.keyLeft = new Keybind(Keyboard.KEY_A, "Left");
 		this.keyRight = new Keybind(Keyboard.KEY_D, "Right");
@@ -30,6 +28,7 @@ public class EntityEnemy extends Entity {
 		super.onUpdate(djinn);		
 		handleInput(djinn);
 		handleCollisions(djinn);
+		addEnemyShot(djinn);
 	}
 
 	private void handleInput(Djinn djinn) {
@@ -48,14 +47,34 @@ public class EntityEnemy extends Entity {
 		}
 	}
 	
+	public void addEnemyShot(Djinn djinn) {
+		if (!djinn.gameStart) return;
+		
+		if (djinn.theWorld.enemyShotsToBeAdded.size() > 0) djinn.theWorld.enemyShotsToBeAdded.remove(0);
+		
+		int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies);
+	 	randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
+
+		if (randNum == randEnemy && djinn.theWorld.entities.contains(djinn.EnemyList.get(randEnemy))) { // This logic limits the amount of shots being produced
+			djinn.theWorld.enemyShotsToBeAdded.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 			// Add the initialized shot to the entities ArrayList
+		} 
+	}
+	
 	private void handleCollisions(Djinn djinn) {
 	
-		boolean collision = this.rect.intersects(djinn.theBall.rect);
+//		boolean collisionWithBall = this.rect.intersects(djinn.theBall.rect);
+//		if (collisionWithBall && djinn.getSystemTime()-this.lastCollision>1000) {
+//			djinn.theBall.bounceY();
+//			djinn.theWorld.entitiesToBeRemoved.add(this);
+//			this.lastCollision = djinn.getSystemTime();
+//		}
 		
-		if (collision && djinn.getSystemTime()-this.lastCollision>1000) {
-			djinn.theBall.bounceY();
-			djinn.theWorld.entitiesToBeRemoved.add(this);
-			this.lastCollision = djinn.getSystemTime();
+		if (djinn.theWorld.entities.contains(djinn.playerShot)) {
+			boolean collisionWithPlayerShot = this.rect.intersects(djinn.playerShot.rect);
+			if (collisionWithPlayerShot) {
+				djinn.theWorld.entitiesToBeRemoved.add(djinn.playerShot);
+				djinn.theWorld.entitiesToBeRemoved.add(this);
+			}
 		}
 	}
 	
@@ -68,5 +87,9 @@ public class EntityEnemy extends Entity {
 			return;
 		}
 		super.moveEntity(djinn, mx, my);
+	}
+	
+	public static int getRandRange(int min, int max) {
+		return min + (int)(Math.random() * max);
 	}
 }

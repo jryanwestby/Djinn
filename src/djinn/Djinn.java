@@ -19,13 +19,14 @@ public class Djinn {
 	
 	// Entity variables
 	public EntityPlayer thePlayer;
-	public EntityBall theBall;
+	public EntityPlayerShot playerShot;
+	//public EntityBall theBall;
 	public EntityDivider theDivider;
 	public ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
 	public World theWorld;
 	
 	// State variables
-	public boolean gameStart;
+	public boolean gameStart = false;
 	
 	public static void main(String[] args) {
 		initEntities();
@@ -37,16 +38,16 @@ public class Djinn {
 	private static void initEntities() {
 		instance = new Djinn();
 		instance.thePlayer = new EntityPlayer(instance);
-		instance.theBall = new EntityBall(instance);
+		//instance.theBall = new EntityBall(instance);
 		instance.theDivider = new EntityDivider(instance);
 		
 		// Add enemies
-		for (int row=0;row<20;row++) {
+		for (int row=0;row<10;row++) {
 			for (int col=0;col<15;col++){
-				instance.EnemyList.add(new EntityEnemy(instance,2F+30*row,7F+15F*col));
+				instance.EnemyList.add(new EntityEnemy(instance,30F+30*row,70F+15F*col));
 			}
 		}
-		
+
 		instance.theWorld = new World(instance);
 	}
 	
@@ -100,15 +101,11 @@ public class Djinn {
 	public void gameReset() {
 		instance.gameStart = false;
 		instance.thePlayer.width -= 2;
-		instance.theBall.posX = instance.thePlayer.posX + (instance.thePlayer.width/2);
-		instance.theBall.posY = instance.thePlayer.posY - instance.theBall.height;
+//		instance.theBall.posX = instance.thePlayer.posX + (instance.thePlayer.width/2);
+//		instance.theBall.posY = instance.thePlayer.posY - instance.theBall.height;
 	}
 	
 	public long getSystemTime() {
 		return (Sys.getTime() * 1000 / Sys.getTimerResolution());
-	}
-	
-	public static int getRandRange(int min, int max) {
-		return min + (int)(Math.random() * max);
 	}
 }

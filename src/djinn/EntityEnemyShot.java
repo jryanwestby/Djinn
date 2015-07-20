@@ -1,8 +1,6 @@
 package djinn;
 
 public class EntityEnemyShot extends Entity {
-	public boolean shotToBeRemoved;
-	
 	public EntityEnemyShot(Djinn djinn, float x, float y) {
 		super(djinn);
 		
@@ -30,9 +28,11 @@ public class EntityEnemyShot extends Entity {
 			djinn.theWorld.entitiesToBeRemoved.add(this);			
 		}
 		
-		boolean collisionWithBall = this.rect.intersects(djinn.theBall.rect);
-		if (collisionWithBall) {
-			djinn.theWorld.entitiesToBeRemoved.add(this);
-		}
+//		boolean collisionWithBall = this.rect.intersects(djinn.theBall.rect);
+//		if (collisionWithBall) {
+//			djinn.theWorld.entitiesToBeRemoved.add(this);
+//		}
 	}
+	
+
 }

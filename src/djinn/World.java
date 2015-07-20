@@ -2,25 +2,39 @@ package djinn;
 
 import java.util.ArrayList;
 
+import org.lwjgl.input.Keyboard;
+
 public class World {
 	public ArrayList<Entity> entities = new ArrayList<Entity>();
-	//public ArrayList<EntityShot> PlayerShotList = new ArrayList<EntityShot>();
-	public ArrayList<EntityEnemyShot> EnemyShotList = new ArrayList<EntityEnemyShot>();
+	public ArrayList<Entity> enemyShotsToBeAdded = new ArrayList<Entity>();
 	public ArrayList<Entity> entitiesToBeRemoved = new ArrayList<Entity>();
-	public int randEnemy;
 	public int initialNumEnemies;
 	
+	public Keybind keySpace;
+	
 	public World(Djinn djinn){
+		
 		this.entities.add(djinn.thePlayer);
-		this.entities.add(djinn.theBall);
+		//this.entities.add(djinn.theBall);
 		this.entities.add(djinn.theDivider);
 		this.entities.addAll(djinn.EnemyList);
+		
 		this.initialNumEnemies = djinn.EnemyList.size();
+		
+		this.keySpace = new Keybind(Keyboard.KEY_SPACE, "Spacebar");
 	}
 	
 	public void run(Djinn djinn) {
-
-		this.addEnemyShot(djinn);     
+		handleInput(djinn);
+		
+		if (djinn.thePlayer.playerShotReady) {
+			this.entities.add(djinn.playerShot);
+			djinn.thePlayer.playerShotReady = false;
+		}
+	
+		for (Entity entity : this.enemyShotsToBeAdded) {
+			this.entities.add(entity);
+		}
 		
 		for (Entity entity : this.entities) {
 			entity.onUpdate(djinn);			// Update all entities
@@ -32,22 +46,13 @@ public class World {
 		}
 	}
 	
-	public void addEnemyShot(Djinn djinn) {
-		if (!djinn.gameStart) return;
-		
-		if (this.EnemyShotList.size() > 0) this.EnemyShotList.remove(0); // Uninitialize the last shot	
-
-		randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
-		int randNum = getRandRange(0, initialNumEnemies);
-		
-		//TODO fix index out of bounds
-		if (randEnemy == randNum && entities.contains(djinn.EnemyList.get(randEnemy))) { // This logic limits the amount of shots being produced
-			this.EnemyShotList.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 	// Initialize a shot from the random enemy
-			this.entities.add(this.EnemyShotList.get(0)); 			// Add the initialized shot to the entities ArrayList
-		}
+	private void handleInput(Djinn djinn) {
+		if (djinn.gameStart) return;
+ 
+		if (this.keySpace.isKeyDown()) {
+			djinn.gameStart = true;
+		} 
 	}
 	
-	public static int getRandRange(int min, int max) {
-		return min + (int)(Math.random() * max);
-	}
+	
 }

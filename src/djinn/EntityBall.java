@@ -41,15 +41,6 @@ public class EntityBall extends Entity{
 				this.bounceX();
 			}
 			
-//			if (this.posX+this.width/2 > djinn.thePlayer.posX+djinn.thePlayer.width/3 &&
-//				this.posX+this.width/2 < djinn.thePlayer.posX+djinn.thePlayer.width*2/3) {
-//				this.speed /= 1.5F;
-//				System.out.println(1 + " Speed:" + this.speed);
-//			}
-//			else {
-//				this.speed *= 1.5F;
-//				System.out.println(0 + " Speed:" + this.speed);
-//			}
 			this.lastCollision = djinn.getSystemTime();
 		}
 		
@@ -79,7 +70,7 @@ public class EntityBall extends Entity{
 				this.posY = djinn.thePlayer.posY - this.height;
 			}
 		}
-
+ 
 		if (this.keySpace.isKeyDown()) {
 			djinn.gameStart = true;
 			this.motionX = this.speed;
