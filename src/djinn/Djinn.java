@@ -42,9 +42,9 @@ public class Djinn {
 		instance.theDivider = new EntityDivider(instance);
 		
 		// Add enemies
-		for (int row=0;row<10;row++) {
-			for (int col=0;col<15;col++){
-				instance.EnemyList.add(new EntityEnemy(instance,30F+30*row,70F+15F*col));
+		for (int row=0;row<8;row++) {
+			for (int col=0;col<5;col++){
+				instance.EnemyList.add(new EntityEnemy(instance,instance.displayWidth/8+instance.displayWidth/10*row,70F+40F*col));
 			}
 		}
 

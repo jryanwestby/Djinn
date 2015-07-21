@@ -4,7 +4,7 @@ public class EntityEnemyShot extends Entity {
 	public EntityEnemyShot(Djinn djinn, float x, float y) {
 		super(djinn);
 		
-		this.motionY = (float) this.speed/2.5F;
+		this.motionY = (float) this.speed/4F;
 		this.posX = x;
 		this.posY = y;
 	}
@@ -24,7 +24,7 @@ public class EntityEnemyShot extends Entity {
 		
 		boolean collisionWithPlayer = this.rect.intersects(djinn.thePlayer.rect);
 		if (collisionWithPlayer) {
-			djinn.gameReset();
+//			djinn.gameReset();
 			djinn.theWorld.entitiesToBeRemoved.add(this);			
 		}
 		

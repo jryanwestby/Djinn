@@ -41,15 +41,18 @@ public class EntityPlayer extends Entity {
 		
 		if (this.keyLeft.isKeyDown()) this.motionX = -this.speed;
 		if (this.keyRight.isKeyDown()) this.motionX = this.speed;
-		if (this.keySpace.isKeyDown()) this.playerShotReady = true;
+
+		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastShot>600) {
+			this.playerShotReady = true;
+			this.lastShot = djinn.getSystemTime();
+		}
 
 	}
 	
 	private void addPlayerShot(Djinn djinn) {
 		if (!djinn.gameStart) return;
-		else if (this.playerShotReady && djinn.getSystemTime()-this.lastShot>1000) {
+		else if (this.playerShotReady) {
 			djinn.playerShot = new EntityPlayerShot(djinn, djinn.thePlayer.posX+djinn.thePlayer.width/2, djinn.thePlayer.posY);
-			this.lastShot = djinn.getSystemTime();
 		}
 	}
 	

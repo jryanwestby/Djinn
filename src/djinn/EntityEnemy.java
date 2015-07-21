@@ -15,7 +15,7 @@ public class EntityEnemy extends Entity {
 		
 		this.posX = x;
 		this.posY = y;
-		this.width *= (float) 1.8F;
+		this.width *= (float) 2.5F;
 		this.maxDistLeft = (int) (width*2);
 		this.maxDistRight = (int) (width*2);
 		
@@ -57,7 +57,7 @@ public class EntityEnemy extends Entity {
 
 		if (randNum == randEnemy && djinn.theWorld.entities.contains(djinn.EnemyList.get(randEnemy))) { // This logic limits the amount of shots being produced
 			djinn.theWorld.enemyShotsToBeAdded.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 			// Add the initialized shot to the entities ArrayList
-		} 
+		}
 	}
 	
 	private void handleCollisions(Djinn djinn) {
