@@ -48,15 +48,15 @@ public class EntityEnemy extends Entity {
 	}
 	
 	public void addEnemyShot(Djinn djinn) {
-		if (!djinn.gameStart) return;
-		
-		if (djinn.theWorld.enemyShotsToBeAdded.size() > 0) djinn.theWorld.enemyShotsToBeAdded.remove(0);
-		
-		int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies);
-	 	randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
+		if (djinn.gameStart){
+			if (djinn.theWorld.enemyShotsToBeAdded.size() > 0) djinn.theWorld.enemyShotsToBeAdded.remove(0); // This is a hack that limits the number of shots being added
+			
+			int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies);
+		 	randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
 
-		if (randNum == randEnemy && djinn.theWorld.entities.contains(djinn.EnemyList.get(randEnemy))) { // This logic limits the amount of shots being produced
-			djinn.theWorld.enemyShotsToBeAdded.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 			// Add the initialized shot to the entities ArrayList
+			if (randNum == randEnemy && djinn.theWorld.entities.contains(djinn.EnemyList.get(randEnemy))) { // This logic limits the amount of shots being produced
+				djinn.theWorld.enemyShotsToBeAdded.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 			// Add the initialized shot to the entities ArrayList
+			}
 		}
 	}
 	

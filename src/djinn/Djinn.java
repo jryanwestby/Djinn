@@ -23,6 +23,7 @@ public class Djinn {
 	//public EntityBall theBall;
 	public EntityDivider theDivider;
 	public ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
+	public EntityBlock blockHandler;
 	public World theWorld;
 	
 	// State variables
@@ -47,7 +48,8 @@ public class Djinn {
 				instance.EnemyList.add(new EntityEnemy(instance,instance.displayWidth/8+instance.displayWidth/10*row,70F+40F*col));
 			}
 		}
-
+		
+		instance.blockHandler = new EntityBlock(instance);
 		instance.theWorld = new World(instance);
 	}
 	

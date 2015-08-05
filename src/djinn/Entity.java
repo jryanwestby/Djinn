@@ -22,14 +22,18 @@ public class Entity {
 		this.height = 14F;
 		this.speed = 12.0F;
 		this.rect = new Rectangle();
-		this.setBounds();
 		this.gui = new Gui();
 	}
 
 	public void onUpdate(Djinn djinn) {
-		this.setBounds();
 		this.moveEntity(djinn, this.motionX, this.motionY);
+		this.setBounds();
 		this.doRender(djinn);
+	}
+
+	public void moveEntity(Djinn djinn, float mx, float my) {
+		this.posX += mx;
+		this.posY += my;
 	}
 	
 	public void setBounds() {
@@ -39,11 +43,6 @@ public class Entity {
 		this.rect.y = (int) this.posY;
 		this.rect.width = (int) this.width;
 		this.rect.height = (int) this.height;
-	}
-	
-	public void moveEntity(Djinn djinn, float mx, float my) {
-		this.posX += mx;
-		this.posY += my;
 	}
 	
 	public void doRender(Djinn djinn) {
