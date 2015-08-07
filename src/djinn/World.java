@@ -1,6 +1,7 @@
 package djinn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.lwjgl.input.Keyboard;
 
@@ -12,6 +13,7 @@ public class World {
 	
 	public Keybind keySpace;
 	
+	@SuppressWarnings("unchecked")
 	public World(Djinn djinn){
 		
 		this.entities.add(djinn.thePlayer);
@@ -20,7 +22,6 @@ public class World {
 		this.entities.addAll(djinn.EnemyList);
 		
 		this.initialNumEnemies = djinn.EnemyList.size();
-		
 		this.keySpace = new Keybind(Keyboard.KEY_SPACE, "Spacebar");
 	}
 	
@@ -39,6 +40,8 @@ public class World {
 		for (Entity entity : this.entities) {
 			entity.onUpdate(djinn);			// Update all entities
 		}
+		
+		djinn.blockHandler.onUpdate(djinn);
 		
 		for (Entity entity : this.entitiesToBeRemoved) {
 			this.entities.remove(entity);
