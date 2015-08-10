@@ -1,8 +1,6 @@
 package djinn;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
 import org.lwjgl.input.Keyboard;
 
 public class World {
@@ -13,7 +11,6 @@ public class World {
 	
 	public Keybind keySpace;
 	
-	@SuppressWarnings("unchecked")
 	public World(Djinn djinn){
 		
 		this.entities.add(djinn.thePlayer);

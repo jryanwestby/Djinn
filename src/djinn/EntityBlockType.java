@@ -198,6 +198,6 @@ public enum EntityBlockType {
 	}
 	
 	public boolean isTile(int x, int y, int rotation) {
-		return tiles[rotation][(y*3) + x]; // Explain the 3
+		return tiles[rotation][(y*4) + x]; // Explain the 3
 	}
 }
