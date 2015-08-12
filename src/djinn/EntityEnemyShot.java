@@ -24,8 +24,9 @@ public class EntityEnemyShot extends Entity {
 		
 		boolean collisionWithPlayer = this.rect.intersects(djinn.thePlayer.rect);
 		if (collisionWithPlayer) {
-//			djinn.gameReset();
-			djinn.theWorld.entitiesToBeRemoved.add(this);			
+			djinn.gameReset();
+			djinn.theWorld.entitiesToBeRemoved.add(this);
+			djinn.blockHandler.dropBlock = true;
 		}
 		
 //		boolean collisionWithBall = this.rect.intersects(djinn.theBall.rect);

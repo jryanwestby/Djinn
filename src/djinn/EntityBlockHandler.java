@@ -7,13 +7,15 @@ import java.util.Random;
 import org.lwjgl.input.Keyboard;
 
 public class EntityBlockHandler {
-	public float refPosX;
-	public float refPosY;
-	public float motionX;
-	public float motionY;
 	public float width;
 	public float height;
+	public float refPosX;
+	public float refPosY;
 	public float speed;
+	public float motionX;
+	public float motionY;
+	public boolean dropBlock;
+	
 	public Gui gui;
 	public Random random;
 	
@@ -23,14 +25,14 @@ public class EntityBlockHandler {
 	public int blockRotation;
 	
 	public boolean newBlockReady;
-	public ArrayList<Rectangle> tileList = new ArrayList<Rectangle>();
+	public ArrayList<Rectangle> blockList = new ArrayList<Rectangle>();
 	public int numBlocks;
 	
 	public Keybind keyA;
 	public Keybind keyD;
 	public Keybind keySpace;
 	public long lastkeyA;
-	public long lastkeyD;	
+	public long lastkeyD;
 		
 	public EntityBlockHandler(Djinn djinn) {
 		this.keyA = new Keybind(Keyboard.KEY_A, "Left");
@@ -43,7 +45,9 @@ public class EntityBlockHandler {
 		this.refPosY = 0;
 		this.speed = 12.0F;
 		this.motionX = 0;
-		this.motionY = -this.speed/8F;
+		this.motionY = 0;
+		this.dropBlock = false;
+		
 		this.gui = new Gui();
 		this.random = new Random();
 		
@@ -76,14 +80,14 @@ public class EntityBlockHandler {
 			for (int col = 0; col < 4; col++) {
 				for (int row = 0; row < 4; row++) {
 					if(currType.isTile(col, row, rotation)) {
-						tileList.add(new Rectangle((int)this.refPosX+(int)this.width*col,(int)this.refPosY-(int)this.height*row,(int)this.width,(int)this.height));
+						blockList.add(new Rectangle((int)this.refPosX+(int)this.width*col,(int)this.refPosY-(int)this.height*row,(int)this.width,(int)this.height));
 					}
 				}
 			}
 			this.numBlocks += 4;
 			this.newBlockReady = false;
-			this.motionY = -this.speed/8F;
-		}		
+			this.dropBlock = false;
+		}
 	}
 
 	private void moveEntity(Djinn djinn, float mx, float my) {
@@ -96,10 +100,10 @@ public class EntityBlockHandler {
 		for (int col = 0; col < 4; col++) {
 			for (int row = 0; row < 4; row++) {
 				if(currType.isTile(col, row, blockRotation)) {
-					tileList.get(tileNumber).x = (int)this.refPosX+(int)this.width*col;
-					tileList.get(tileNumber).y = (int)this.refPosY-(int)this.height*row;
-					tileList.get(tileNumber).width = (int) this.width; 
-					tileList.get(tileNumber).height = (int) this.height;
+					blockList.get(tileNumber).x = (int)this.refPosX+(int)this.width*col;
+					blockList.get(tileNumber).y = (int)this.refPosY-(int)this.height*row;
+					blockList.get(tileNumber).width = (int) this.width; 
+					blockList.get(tileNumber).height = (int) this.height;
 					tileNumber++;
 				}
 			}
@@ -107,51 +111,55 @@ public class EntityBlockHandler {
 	}
 
 	private void doRender(Djinn djinn) {
-		for (int tileNumber = 0; tileNumber < tileList.size(); tileNumber++) {
-			gui.drawRect(tileList.get(tileNumber).x, tileList.get(tileNumber).y, this.width, this.height, 0xFF000000);
+		for (int tileNumber = 0; tileNumber < blockList.size(); tileNumber++) {
+			gui.drawRect(blockList.get(tileNumber).x, blockList.get(tileNumber).y, this.width, this.height, 0xFF000000);
 		}		
 	}
 
 	private void handleInput(Djinn djinn) {
-		this.motionX = 0;
-		
-		if (this.keyA.isKeyDown() && djinn.getSystemTime()-this.lastkeyA>200) {
-			this.refPosX -= this.width;
-			this.lastkeyA = djinn.getSystemTime();
+		if (this.dropBlock) {
+			this.motionX = 0;
+		} else {
+			if (djinn.gameStart) this.motionY = -this.speed/5;
+			this.motionX = 0;
+			
+			if (this.keyA.isKeyDown() && djinn.getSystemTime()-this.lastkeyA>200) {
+				this.refPosX -= this.width;
+				this.lastkeyA = djinn.getSystemTime();
+			}
+			
+			if (this.keyD.isKeyDown() && djinn.getSystemTime()-this.lastkeyD>200) {
+				this.refPosX += this.width;
+				this.lastkeyD = djinn.getSystemTime();
+			}
 		}
-		
-		if (this.keyD.isKeyDown() && djinn.getSystemTime()-this.lastkeyD>200) {
-			this.refPosX += this.width;
-			this.lastkeyD = djinn.getSystemTime();
-		}
-		
-//		if (this.keySpace.isKeyDown()) {
-//			this.motionY = -this.speed/2;
-//		} else {
-//			this.motionY = -this.speed/10;
-//		}
 	}
 	
 	private void handleCollisions(Djinn djinn) {
-		boolean collisionWithDivider = false;
-		for (int tileNumber = this.numBlocks-4; tileNumber < tileList.size(); tileNumber++) {
-			if (tileList.get(tileNumber).intersects(djinn.theDivider.rect)) {
-				collisionWithDivider = true;
-			}
-		}
 		
-		boolean collisionWithBlock = false;
-		for (int tileNumber = this.numBlocks-4; tileNumber < tileList.size(); tileNumber++) {
-			for (int tileListNum = 0; tileListNum < tileList.size()-4; tileListNum++) {
-				if (tileList.get(tileNumber).intersects(tileList.get(tileListNum))) {
-					collisionWithBlock = true;
+		boolean collisionWithDivider = false;
+		collisionWithDividerCheck:
+			for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
+				if (blockList.get(currentBlock).intersects(djinn.theDivider.rect)) {
+					collisionWithDivider = true;
+					break collisionWithDividerCheck;
 				}
 			}
-		}
 		
-		if (collisionWithDivider || collisionWithBlock) {
-			this.motionX = 0;
-			this.motionY = 0;
+		boolean collisionWithBlock = false;
+		collisionWithBlockCheck:
+			for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
+				for (int blockIndex = 0; blockIndex < blockList.size()-4; blockIndex++) {
+					if (blockList.get(currentBlock).intersects(blockList.get(blockIndex))) {
+						collisionWithBlock = true;
+						break collisionWithBlockCheck;
+					}
+				}
+			}
+		// TODO Need to stop block before it collides, needs to run one more update with a new refPosY
+		
+		if (collisionWithBlock || collisionWithDivider) {
+			this.moveEntity(djinn, this.width, this.height);
 			this.newBlockReady = true;
 			this.blockRotation = random.nextInt(4); 
 			collisionWithDivider = false;

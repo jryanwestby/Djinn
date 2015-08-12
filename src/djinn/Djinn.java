@@ -102,7 +102,7 @@ public class Djinn {
 	
 	public void gameReset() {
 		instance.gameStart = false;
-		instance.thePlayer.width -= 2;
+		instance.thePlayer.width -= 10;
 //		instance.theBall.posX = instance.thePlayer.posX + (instance.thePlayer.width/2);
 //		instance.theBall.posY = instance.thePlayer.posY - instance.theBall.height;
 	}

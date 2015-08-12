@@ -29,10 +29,10 @@ public class EntityPlayer extends Entity {
 		handleInput(djinn);
 		addPlayerShot(djinn);
 		
-		if (this.width < 1F) {
-			Djinn.isRunning = false; // Game over
-			//TODO Program actual game over notification
-		}
+//		if (this.width < 1F) {
+//			Djinn.isRunning = false; // Game over
+//			//TODO Program actual game over notification
+//		}
 	}
 
 	private void handleInput(Djinn djinn) {
