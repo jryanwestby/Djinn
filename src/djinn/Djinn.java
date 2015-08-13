@@ -13,7 +13,7 @@ public class Djinn {
 	private static Djinn instance;
 	public String TITLE = "Djinn";
 	public String VERSION = "0.0.1";
-	public int displayWidth = 600;
+	public int displayWidth = 450;
 	public int displayHeight = 1000;
 	public static boolean isRunning = true;
 	

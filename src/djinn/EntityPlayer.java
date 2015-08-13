@@ -13,7 +13,7 @@ public class EntityPlayer extends Entity {
 		super(djinn);
 		this.posX = 16F;
 		this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
-		this.width *= 6F;
+		this.width *= 4F;
 		this.speed *= 1.2F;
 		
 		this.keyLeft = new Keybind(Keyboard.KEY_LEFT, "Left");

@@ -33,6 +33,8 @@ public class EntityBlockHandler {
 	public Keybind keySpace;
 	public long lastkeyA;
 	public long lastkeyD;
+	
+	public float tempRefPosX;
 		
 	public EntityBlockHandler(Djinn djinn) {
 		this.keyA = new Keybind(Keyboard.KEY_A, "Left");
@@ -120,15 +122,17 @@ public class EntityBlockHandler {
 		if (this.dropBlock) {
 			this.motionX = 0;
 		} else {
-			if (djinn.gameStart) this.motionY = -this.speed/5;
+			if (djinn.gameStart) this.motionY = -this.speed/6.0F;
 			this.motionX = 0;
 			
-			if (this.keyA.isKeyDown() && djinn.getSystemTime()-this.lastkeyA>200) {
+			if (this.keyA.isKeyDown() && djinn.getSystemTime()-this.lastkeyA>100) {
+				this.tempRefPosX = this.refPosX;
 				this.refPosX -= this.width;
 				this.lastkeyA = djinn.getSystemTime();
 			}
 			
-			if (this.keyD.isKeyDown() && djinn.getSystemTime()-this.lastkeyD>200) {
+			if (this.keyD.isKeyDown() && djinn.getSystemTime()-this.lastkeyD>100) {
+				this.tempRefPosX = this.refPosX;
 				this.refPosX += this.width;
 				this.lastkeyD = djinn.getSystemTime();
 			}
@@ -146,23 +150,37 @@ public class EntityBlockHandler {
 				}
 			}
 		
-		boolean collisionWithBlock = false;
-		collisionWithBlockCheck:
-			for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
-				for (int blockIndex = 0; blockIndex < blockList.size()-4; blockIndex++) {
-					if (blockList.get(currentBlock).intersects(blockList.get(blockIndex))) {
-						collisionWithBlock = true;
-						break collisionWithBlockCheck;
-					}
-				}
-			}
-		// TODO Need to stop block before it collides, needs to run one more update with a new refPosY
-		
-		if (collisionWithBlock || collisionWithDivider) {
-			this.moveEntity(djinn, this.width, this.height);
+		if (collisionWithDivider) {
 			this.newBlockReady = true;
 			this.blockRotation = random.nextInt(4); 
-			collisionWithDivider = false;
+		} else {
+			boolean collisionWithBlock = false;
+			collisionWithBlockCheck:
+				for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
+					for (int blockIndex = 0; blockIndex < blockList.size()-4; blockIndex++) {
+						if (blockList.get(currentBlock).intersects(blockList.get(blockIndex))) {
+							collisionWithBlock = true;
+							break collisionWithBlockCheck;
+						}
+					}
+				}
+			
+			if (collisionWithBlock) {
+				if (djinn.getSystemTime()-this.lastkeyA<50 || djinn.getSystemTime()-this.lastkeyD<50) { // TODO got the right idea here, need to work on it more
+					this.refPosX = this.tempRefPosX;
+					this.lastkeyA = djinn.getSystemTime();
+					this.lastkeyD = djinn.getSystemTime();
+					this.setBounds();
+					this.doRender(djinn);
+				} else{
+					this.refPosY += this.speed/6.0F;
+					this.setBounds();
+					this.doRender(djinn);
+					this.newBlockReady = true;
+					this.blockRotation = random.nextInt(4); 
+				}
+
+			}
 		}
 	}
 }
