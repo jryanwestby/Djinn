@@ -1,7 +1,6 @@
 package djinn;
 
 import java.util.ArrayList;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;

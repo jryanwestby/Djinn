@@ -10,6 +10,7 @@ public class EntityBlockHandler {
 	public float width;
 	public float height;
 	public float refPosX;
+	public float tempRefPosX;
 	public float refPosY;
 	public float speed;
 	public float motionX;
@@ -22,10 +23,11 @@ public class EntityBlockHandler {
 	public int numBlockTypes;
 	public EntityBlockType currType;
 	public EntityBlockType nextType;
+	public int currentBlockRotation;
+	public int tempBlockRotation;
 	
 	public boolean newBlockReady;
 	public ArrayList<Rectangle> blockList = new ArrayList<Rectangle>();
-	public int blockRotationArray[] = new int[3];
 	public int numBlocks;
 	
 	public Keybind keyW;
@@ -37,8 +39,8 @@ public class EntityBlockHandler {
 	public long lastkeyA;
 	public long lastkeyS;
 	public long lastkeyD;
+	public long lastkeySpace;
 	
-	public float tempRefPosX;
 	
 	public EntityBlockHandler(Djinn djinn) {
 		this.keyW = new Keybind(Keyboard.KEY_W, "Up");
@@ -51,7 +53,7 @@ public class EntityBlockHandler {
 		this.height = 28F;
 		this.refPosX = 0;
 		this.refPosY = 0;
-		this.speed = 12.0F;
+		this.speed = 10.0F;
 		this.motionX = 0;
 		this.motionY = 0;
 		this.dropBlock = false;
@@ -62,19 +64,19 @@ public class EntityBlockHandler {
 		this.numBlockTypes = EntityBlockType.values().length;
 		this.currType = EntityBlockType.values()[random.nextInt(numBlockTypes)];
 		this.nextType = EntityBlockType.values()[random.nextInt(numBlockTypes)];
-		this.blockRotation = random.nextInt(4); 
+		this.currentBlockRotation = random.nextInt(4); 
 		
 		this.newBlockReady = true;
 		this.numBlocks = 0;
 	}
 	
 	public void onUpdate(Djinn djinn) {
-		this.addBlock(djinn, this.blockRotation);
+		this.addBlock(djinn, this.currentBlockRotation);
 		this.moveEntity(djinn, this.motionX, this.motionY);
 		this.setBounds();
-		this.doRender(djinn);
 		this.handleInput(djinn);
 		this.handleCollisions(djinn);
+		this.doRender(djinn);
 	}
 	
 	public void addBlock(Djinn djinn, int rotation) {
@@ -107,7 +109,7 @@ public class EntityBlockHandler {
 		int tileNumber = this.numBlocks-4;
 		for (int col = 0; col < 4; col++) {
 			for (int row = 0; row < 4; row++) {
-				if(currType.isTile(col, row, this.blockRotation)) {
+				if(currType.isTile(col, row, this.currentBlockRotation)) {
 					blockList.get(tileNumber).x = (int)this.refPosX+(int)this.width*col;
 					blockList.get(tileNumber).y = (int)this.refPosY-(int)this.height*row;
 					blockList.get(tileNumber).width = (int) this.width; 
@@ -118,12 +120,6 @@ public class EntityBlockHandler {
 		}
 	}
 
-	private void doRender(Djinn djinn) {
-		for (int tileNumber = 0; tileNumber < blockList.size(); tileNumber++) {
-			gui.drawRect(blockList.get(tileNumber).x, blockList.get(tileNumber).y, this.width, this.height, 0xFF000000);
-		}		
-	}
-
 	private void handleInput(Djinn djinn) {
 		if (this.dropBlock) {
 			this.motionX = 0;
@@ -132,7 +128,8 @@ public class EntityBlockHandler {
 			this.motionX = 0;
 			
 			if (this.keyW.isKeyDown() && djinn.getSystemTime()-this.lastkeyW>150) {
-				this.blockRotation = random.nextInt(4);
+				this.tempBlockRotation = this.currentBlockRotation;
+				this.currentBlockRotation = (this.currentBlockRotation == 0) ? 3 : this.currentBlockRotation-1;
 				this.lastkeyW = djinn.getSystemTime();
 			}
 			
@@ -143,7 +140,8 @@ public class EntityBlockHandler {
 			}
 			
 			if (this.keyS.isKeyDown() && djinn.getSystemTime()-this.lastkeyS>150) {
-				this.blockRotation = random.nextInt(4);
+				this.tempBlockRotation = this.currentBlockRotation;
+				this.currentBlockRotation = (this.currentBlockRotation == 3) ? 0 : this.currentBlockRotation+1;
 				this.lastkeyS = djinn.getSystemTime();
 			}
 			
@@ -168,35 +166,47 @@ public class EntityBlockHandler {
 		
 		if (collisionWithDivider) {
 			this.newBlockReady = true;
-			this.blockRotation = random.nextInt(4); 
-		} else {
+			this.currentBlockRotation = random.nextInt(4); 
+		} 
+		
+		else {
 			boolean collisionWithBlock = checkCollisionWithBlock(djinn);
+			boolean collisionWithWall = checkCollisionWithWall(djinn);
 			
-			if (collisionWithBlock) {
-				if (djinn.getSystemTime()-this.lastkeyA<30 || djinn.getSystemTime()-this.lastkeyD<30) { // TODO got the right idea here, need to work on it more
+			if (collisionWithWall || collisionWithBlock) {
+				if (djinn.getSystemTime()-this.lastkeyA<30 || djinn.getSystemTime()-this.lastkeyD<30) { 
 					this.refPosX = this.tempRefPosX;
 					this.lastkeyA = djinn.getSystemTime();
 					this.lastkeyD = djinn.getSystemTime();
 					this.setBounds();
 					
-					// Check one more time to ensure block sets itself if it encounters a block in the Y direction
+					// Check one more time to ensure block sets itself correctly if it encounters a block in the Y direction
 					if (this.checkCollisionWithBlock(djinn)) {
-						this.refPosY += this.speed/6.0F;
-						this.setBounds();
-						this.doRender(djinn);
-						this.newBlockReady = true;
-						this.blockRotation = random.nextInt(4); 
+						this.setAndRespawn(djinn);
+					}
+				}
+				else if (djinn.getSystemTime()-this.lastkeyW<30 || djinn.getSystemTime()-this.lastkeyS<30) { 
+					this.currentBlockRotation = this.tempBlockRotation;
+					this.lastkeyW = djinn.getSystemTime();
+					this.lastkeyS = djinn.getSystemTime();
+					this.setBounds();
+					
+					//	Check one more time to ensure block sets itself correctly if it encounters a block in the Y direction
+					if (this.checkCollisionWithBlock(djinn)) {
+						this.setAndRespawn(djinn);
 					}
 				} else{
-					this.refPosY += this.speed/6.0F;
-					this.setBounds();
-					this.doRender(djinn);
-					this.newBlockReady = true;
-					this.blockRotation = random.nextInt(4); 
+					this.setAndRespawn(djinn);
 				}
 
 			}
 		}
+	}
+	
+	private void doRender(Djinn djinn) {
+		for (int tileNumber = 0; tileNumber < blockList.size(); tileNumber++) {
+			gui.drawRect(blockList.get(tileNumber).x, blockList.get(tileNumber).y, this.width, this.height, 0xFF000000);
+		}		
 	}
 	
 	private boolean checkCollisionWithBlock(Djinn djinn) {
@@ -208,5 +218,21 @@ public class EntityBlockHandler {
 			}
 		}
 		return false;
+	}
+	
+	private boolean checkCollisionWithWall(Djinn djinn) {
+		for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
+			if (blockList.get(currentBlock).x < 0 || blockList.get(currentBlock).x+this.width > djinn.displayWidth) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void setAndRespawn(Djinn djinn) {
+		this.refPosY += this.speed/6.0F;
+		this.setBounds();
+		this.newBlockReady = true;
+		this.currentBlockRotation = random.nextInt(4); 
 	}
 }
