@@ -28,6 +28,8 @@ public class EntityBlockHandler {
 	
 	public boolean newBlockReady;
 	public ArrayList<Rectangle> blockList = new ArrayList<Rectangle>();
+	public ArrayList<ArrayList<Integer>> blockRowHeights = new ArrayList<ArrayList<Integer>>();
+	public ArrayList<Integer> blocksToBeRemoved = new ArrayList<Integer>();
 	public int numBlocks;
 	
 	public Keybind keyW;
@@ -53,7 +55,7 @@ public class EntityBlockHandler {
 		this.height = 28F;
 		this.refPosX = 0;
 		this.refPosY = 0;
-		this.speed = 10.0F;
+		this.speed = 6.0F;
 		this.motionX = 0;
 		this.motionY = 0;
 		this.dropBlock = false;
@@ -78,7 +80,7 @@ public class EntityBlockHandler {
 		this.handleCollisions(djinn);
 		this.doRender(djinn);
 	}
-	
+
 	public void addBlock(Djinn djinn, int rotation) {
 		if(this.newBlockReady){
 			this.currType = this.nextType;
@@ -232,7 +234,26 @@ public class EntityBlockHandler {
 	private void setAndRespawn(Djinn djinn) {
 		this.refPosY += this.speed/6.0F;
 		this.setBounds();
+		this.checkRows(djinn);
+		this.removeRows(djinn);
 		this.newBlockReady = true;
 		this.currentBlockRotation = random.nextInt(4); 
+	}
+	
+	private void checkRows(Djinn djinn) {
+		for (int currentBlock = numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
+			if (blockRowHeights.contains(blockList.get(currentBlock).height)) {
+				//	add block index int to corresponding height arraylist
+				
+				//	if height arraylist size > (size whose total widths would equal the screen width)
+			} else {
+				blockRowHeights.add(new ArrayList<Integer> (blockList.get(currentBlock).height)); // need a name here in order to access
+			}
+		}
+	}
+	
+	private void removeRows(Djinn djinn) {
+//		from blockList remove index of each block in blocksToBeRemoved arraylist
+//		add this.height to each of the rest of the blocks in the rowHeights arraylist
 	}
 }
