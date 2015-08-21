@@ -2,6 +2,7 @@ package djinn;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
@@ -28,7 +29,7 @@ public class EntityBlockHandler {
 	
 	public boolean newBlockReady;
 	public ArrayList<Rectangle> blockList = new ArrayList<Rectangle>();
-	public ArrayList<ArrayList<Integer>> blockRowHeights = new ArrayList<ArrayList<Integer>>();
+	public HashMap<Integer, String> blockHeightMap = new HashMap<Integer, String>();
 	public ArrayList<Integer> blocksToBeRemoved = new ArrayList<Integer>();
 	public int numBlocks;
 	
@@ -167,8 +168,7 @@ public class EntityBlockHandler {
 			}
 		
 		if (collisionWithDivider) {
-			this.newBlockReady = true;
-			this.currentBlockRotation = random.nextInt(4); 
+			this.setAndRespawn(djinn);
 		} 
 		
 		else {
@@ -235,25 +235,36 @@ public class EntityBlockHandler {
 		this.refPosY += this.speed/6.0F;
 		this.setBounds();
 		this.checkRows(djinn);
-		this.removeRows(djinn);
+		this.removeRow(djinn);
 		this.newBlockReady = true;
 		this.currentBlockRotation = random.nextInt(4); 
 	}
 	
 	private void checkRows(Djinn djinn) {
 		for (int currentBlock = numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
-			if (blockRowHeights.contains(blockList.get(currentBlock).height)) {
-				//	add block index int to corresponding height arraylist
+			int currentRowHeight = blockList.get(currentBlock).y;
+			//System.out.println("Current Row Height: " + currentRowHeight);
+			
+			if (blockHeightMap.containsKey(currentRowHeight)) {
+				// add current block to currentRowHeightList
+				// System.out.println("Added block to row height list");
 				
-				//	if height arraylist size > (size whose total widths would equal the screen width)
+				if (blockHeightMap.containsValue() > djinn.displayWidth/this.width) {
+					blocksToBeRemoved.addAll(blockHeightMap.get(currentRowHeight));
+					//System.out.println("Blocks to be removed");
+				}
 			} else {
-				blockRowHeights.add(new ArrayList<Integer> (blockList.get(currentBlock).height)); // need a name here in order to access
+				
+//				blockRowHeightsList.add(currentRowHeight);
+//				System.out.println(blockRowHeightsList);
 			}
 		}
 	}
 	
-	private void removeRows(Djinn djinn) {
-//		from blockList remove index of each block in blocksToBeRemoved arraylist
+	private void removeRow(Djinn djinn) {
+		//for (int blockToBeRemoved = 0; blockToBeRemoved < blocksToBeRemoved.size(); blockToBeRemoved++) {
+		blockList.removeAll(blocksToBeRemoved);
+		//}
 //		add this.height to each of the rest of the blocks in the rowHeights arraylist
 	}
 }
