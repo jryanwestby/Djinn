@@ -29,7 +29,7 @@ public class EntityBlockHandler {
 	
 	public boolean newBlockReady;
 	public ArrayList<Rectangle> blockList = new ArrayList<Rectangle>();
-	public HashMap<Integer, String> blockHeightMap = new HashMap<Integer, String>();
+	public HashMap<Integer, ArrayList<Integer>> blockHeightMap = new HashMap<Integer, ArrayList<Integer>>();
 	public ArrayList<Integer> blocksToBeRemoved = new ArrayList<Integer>();
 	public int numBlocks;
 	
@@ -246,16 +246,15 @@ public class EntityBlockHandler {
 			//System.out.println("Current Row Height: " + currentRowHeight);
 			
 			if (blockHeightMap.containsKey(currentRowHeight)) {
-				// add current block to currentRowHeightList
+				blockHeightMap.get(currentRowHeight).add(currentBlock);
 				// System.out.println("Added block to row height list");
 				
-				if (blockHeightMap.containsValue() > djinn.displayWidth/this.width) {
-					blocksToBeRemoved.addAll(blockHeightMap.get(currentRowHeight));
+				if (blockHeightMap.values().size() > djinn.displayWidth/this.width) {
+					// Add all values in key to blocksToBeRemoved
 					//System.out.println("Blocks to be removed");
 				}
 			} else {
-				
-//				blockRowHeightsList.add(currentRowHeight);
+				blockHeightMap.
 //				System.out.println(blockRowHeightsList);
 			}
 		}
