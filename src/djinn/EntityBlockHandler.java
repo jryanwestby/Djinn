@@ -56,7 +56,7 @@ public class EntityBlockHandler {
 		this.height = 28F;
 		this.refPosX = 0;
 		this.refPosY = 0;
-		this.speed = 6.0F;
+		this.speed = 12.0F;
 		this.motionX = 0;
 		this.motionY = 0;
 		this.dropBlock = false;
@@ -232,7 +232,7 @@ public class EntityBlockHandler {
 	}
 	
 	private void setAndRespawn(Djinn djinn) {
-		this.refPosY += this.speed/6.0F;
+		this.refPosY += this.speed/12.0F;
 		this.setBounds();
 		this.checkRows(djinn);
 		this.removeRow(djinn);
@@ -243,27 +243,35 @@ public class EntityBlockHandler {
 	private void checkRows(Djinn djinn) {
 		for (int currentBlock = numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
 			int currentRowHeight = blockList.get(currentBlock).y;
-			//System.out.println("Current Row Height: " + currentRowHeight);
+			System.out.println("Current Row Height: " + currentRowHeight);
 			
 			if (blockHeightMap.containsKey(currentRowHeight)) {
 				blockHeightMap.get(currentRowHeight).add(currentBlock);
-				// System.out.println("Added block to row height list");
+				System.out.println(blockHeightMap.get(currentRowHeight));
+				System.out.println("currentRow size: " + blockHeightMap.get(currentRowHeight).size());
 				
-				if (blockHeightMap.values().size() > djinn.displayWidth/this.width) {
-					// Add all values in key to blocksToBeRemoved
-					//System.out.println("Blocks to be removed");
+				if (blockHeightMap.get(currentRowHeight).size() == 15) {
+					blocksToBeRemoved.addAll(blockHeightMap.get(currentRowHeight));
+					System.out.println("Added Blocks to be removed");
 				}
 			} else {
-				blockHeightMap.
-//				System.out.println(blockRowHeightsList);
+				blockHeightMap.put(currentRowHeight, new ArrayList<Integer>());
+				System.out.println("Created ArrayList for currentRowHeight");
 			}
 		}
 	}
 	
 	private void removeRow(Djinn djinn) {
-		//for (int blockToBeRemoved = 0; blockToBeRemoved < blocksToBeRemoved.size(); blockToBeRemoved++) {
-		blockList.removeAll(blocksToBeRemoved);
-		//}
+		for (int blockToBeRemoved = 0; blockToBeRemoved < blocksToBeRemoved.size(); blockToBeRemoved++) {
+			System.out.println();
+			System.out.println("Removing: " + blockList.get(blocksToBeRemoved.get(blockToBeRemoved)));
+			
+			blockList.remove(blocksToBeRemoved.get(blockToBeRemoved));
+			boolean removed = blockList.remove(blockList.get(blocksToBeRemoved.get(blockToBeRemoved)));
+			System.out.println("Removed? " + removed);
+			// Need to figure out indexing error
+			this.numBlocks -= 1;
+		}
 //		add this.height to each of the rest of the blocks in the rowHeights arraylist
 	}
 }
