@@ -2,6 +2,7 @@ package djinn;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -29,8 +30,9 @@ public class EntityBlockHandler {
 	
 	public boolean newBlockReady;
 	public ArrayList<Rectangle> blockList = new ArrayList<Rectangle>();
-	public HashMap<Integer, ArrayList<Integer>> blockHeightMap = new HashMap<Integer, ArrayList<Integer>>();
-	public ArrayList<Integer> blocksToBeRemoved = new ArrayList<Integer>();
+	public HashMap<Integer, ArrayList<Rectangle>> blockHeightMap = new HashMap<Integer, ArrayList<Rectangle>>();
+	public ArrayList<Rectangle> blocksToBeRemoved = new ArrayList<Rectangle>();
+	public boolean removeRowReady;
 	public int numBlocks;
 	
 	public Keybind keyW;
@@ -70,6 +72,7 @@ public class EntityBlockHandler {
 		this.currentBlockRotation = random.nextInt(4); 
 		
 		this.newBlockReady = true;
+		this.removeRowReady = false;
 		this.numBlocks = 0;
 	}
 	
@@ -235,7 +238,7 @@ public class EntityBlockHandler {
 		this.refPosY += this.speed/12.0F;
 		this.setBounds();
 		this.checkRows(djinn);
-		this.removeRow(djinn);
+		if (this.removeRowReady) this.removeRow(djinn); 
 		this.newBlockReady = true;
 		this.currentBlockRotation = random.nextInt(4); 
 	}
@@ -243,35 +246,25 @@ public class EntityBlockHandler {
 	private void checkRows(Djinn djinn) {
 		for (int currentBlock = numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
 			int currentRowHeight = blockList.get(currentBlock).y;
-			System.out.println("Current Row Height: " + currentRowHeight);
 			
 			if (blockHeightMap.containsKey(currentRowHeight)) {
-				blockHeightMap.get(currentRowHeight).add(currentBlock);
-				System.out.println(blockHeightMap.get(currentRowHeight));
-				System.out.println("currentRow size: " + blockHeightMap.get(currentRowHeight).size());
+				blockHeightMap.get(currentRowHeight).add(blockList.get(currentBlock));
 				
 				if (blockHeightMap.get(currentRowHeight).size() == 15) {
 					blocksToBeRemoved.addAll(blockHeightMap.get(currentRowHeight));
-					System.out.println("Added Blocks to be removed");
+					this.removeRowReady = true;
+		
 				}
 			} else {
-				blockHeightMap.put(currentRowHeight, new ArrayList<Integer>());
-				System.out.println("Created ArrayList for currentRowHeight");
+				blockHeightMap.put(currentRowHeight, new ArrayList<Rectangle>());
 			}
 		}
 	}
 	
 	private void removeRow(Djinn djinn) {
-		for (int blockToBeRemoved = 0; blockToBeRemoved < blocksToBeRemoved.size(); blockToBeRemoved++) {
-			System.out.println();
-			System.out.println("Removing: " + blockList.get(blocksToBeRemoved.get(blockToBeRemoved)));
-			
-			blockList.remove(blocksToBeRemoved.get(blockToBeRemoved));
-			boolean removed = blockList.remove(blockList.get(blocksToBeRemoved.get(blockToBeRemoved)));
-			System.out.println("Removed? " + removed);
-			// Need to figure out indexing error
-			this.numBlocks -= 1;
-		}
-//		add this.height to each of the rest of the blocks in the rowHeights arraylist
+		blockList.removeAll(blocksToBeRemoved);
+		this.numBlocks -= blocksToBeRemoved.size();
+		blocksToBeRemoved.clear();
+		this.removeRowReady = false;
 	}
 }
