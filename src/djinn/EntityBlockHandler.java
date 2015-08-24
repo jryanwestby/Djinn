@@ -2,7 +2,6 @@ package djinn;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -17,7 +16,6 @@ public class EntityBlockHandler {
 	public float speed;
 	public float motionX;
 	public float motionY;
-	public boolean dropBlock;
 	
 	public Gui gui;
 	public Random random;
@@ -58,10 +56,9 @@ public class EntityBlockHandler {
 		this.height = 28F;
 		this.refPosX = 0;
 		this.refPosY = 0;
-		this.speed = 12.0F;
+		this.speed = 1.0F;
 		this.motionX = 0;
 		this.motionY = 0;
-		this.dropBlock = false;
 		
 		this.gui = new Gui();
 		this.random = new Random();
@@ -102,7 +99,6 @@ public class EntityBlockHandler {
 			}
 			this.numBlocks += 4;
 			this.newBlockReady = false;
-			this.dropBlock = false;
 		}
 	}
 
@@ -127,37 +123,34 @@ public class EntityBlockHandler {
 	}
 
 	private void handleInput(Djinn djinn) {
-		if (this.dropBlock) {
-			this.motionX = 0;
-		} else {
-			if (djinn.gameStart) this.motionY = -this.speed/6.0F;
-			this.motionX = 0;
-			
-			if (this.keyW.isKeyDown() && djinn.getSystemTime()-this.lastkeyW>150) {
-				this.tempBlockRotation = this.currentBlockRotation;
-				this.currentBlockRotation = (this.currentBlockRotation == 0) ? 3 : this.currentBlockRotation-1;
-				this.lastkeyW = djinn.getSystemTime();
-			}
-			
-			if (this.keyA.isKeyDown() && djinn.getSystemTime()-this.lastkeyA>100) {
-				this.tempRefPosX = this.refPosX;
-				this.refPosX -= this.width;
-				this.lastkeyA = djinn.getSystemTime();
-			}
-			
-			if (this.keyS.isKeyDown() && djinn.getSystemTime()-this.lastkeyS>150) {
-				this.tempBlockRotation = this.currentBlockRotation;
-				this.currentBlockRotation = (this.currentBlockRotation == 3) ? 0 : this.currentBlockRotation+1;
-				this.lastkeyS = djinn.getSystemTime();
-			}
-			
-			if (this.keyD.isKeyDown() && djinn.getSystemTime()-this.lastkeyD>100) {
-				this.tempRefPosX = this.refPosX;
-				this.refPosX += this.width;
-				this.lastkeyD = djinn.getSystemTime();
-			}
+		if (djinn.gameStart) this.motionY = -this.speed;
+		this.motionX = 0;
+		
+		if (this.keyW.isKeyDown() && djinn.getSystemTime()-this.lastkeyW>150) {
+			this.tempBlockRotation = this.currentBlockRotation;
+			this.currentBlockRotation = (this.currentBlockRotation == 0) ? 3 : this.currentBlockRotation-1;
+			this.lastkeyW = djinn.getSystemTime();
+		}
+		
+		if (this.keyA.isKeyDown() && djinn.getSystemTime()-this.lastkeyA>100) {
+			this.tempRefPosX = this.refPosX;
+			this.refPosX -= this.width;
+			this.lastkeyA = djinn.getSystemTime();
+		}
+		
+		if (this.keyS.isKeyDown() && djinn.getSystemTime()-this.lastkeyS>150) {
+			this.tempBlockRotation = this.currentBlockRotation;
+			this.currentBlockRotation = (this.currentBlockRotation == 3) ? 0 : this.currentBlockRotation+1;
+			this.lastkeyS = djinn.getSystemTime();
+		}
+		
+		if (this.keyD.isKeyDown() && djinn.getSystemTime()-this.lastkeyD>100) {
+			this.tempRefPosX = this.refPosX;
+			this.refPosX += this.width;
+			this.lastkeyD = djinn.getSystemTime();
 		}
 	}
+
 	
 	private void handleCollisions(Djinn djinn) {
 		
@@ -235,7 +228,7 @@ public class EntityBlockHandler {
 	}
 	
 	private void setAndRespawn(Djinn djinn) {
-		this.refPosY += this.speed/12.0F;
+		this.refPosY += this.speed;
 		this.setBounds();
 		this.checkRows(djinn);
 		if (this.removeRowReady) this.removeRow(djinn); 
@@ -250,13 +243,14 @@ public class EntityBlockHandler {
 			if (blockHeightMap.containsKey(currentRowHeight)) {
 				blockHeightMap.get(currentRowHeight).add(blockList.get(currentBlock));
 				
-				if (blockHeightMap.get(currentRowHeight).size() == 15) {
+				if (blockHeightMap.get(currentRowHeight).size() == 16) {
 					blocksToBeRemoved.addAll(blockHeightMap.get(currentRowHeight));
 					this.removeRowReady = true;
 		
 				}
 			} else {
 				blockHeightMap.put(currentRowHeight, new ArrayList<Rectangle>());
+				blockHeightMap.get(currentRowHeight).add(blockList.get(currentBlock));
 			}
 		}
 	}
