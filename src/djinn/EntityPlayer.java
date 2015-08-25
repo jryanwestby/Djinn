@@ -11,9 +11,9 @@ public class EntityPlayer extends Entity {
 	
 	public EntityPlayer(Djinn djinn) {
 		super(djinn);
-		this.posX = 16F;
-		this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
 		this.width *= 4F;
+		this.posX = (djinn.displayWidth/2);
+		this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
 		this.speed *= 1.2F;
 		
 		this.keyLeft = new Keybind(Keyboard.KEY_LEFT, "Left");
@@ -29,13 +29,19 @@ public class EntityPlayer extends Entity {
 		handleInput(djinn);
 		addPlayerShot(djinn);
 		
-//		if (this.width < 1F) {
-//			Djinn.isRunning = false; // Game over
-//			//TODO Program actual game over notification
-//		}
+		if (this.width < 8.0F) {
+			Djinn.isRunning = false; // Game over
+			//TODO Program actual game over notification
+		}
 	}
 
 	private void handleInput(Djinn djinn) {
+		if (!djinn.gameStart) {
+			this.posX = (djinn.displayWidth/2);
+			this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
+			return;
+		}
+
 		this.motionX = 0;
 		this.motionY = 0;
 		
@@ -43,6 +49,7 @@ public class EntityPlayer extends Entity {
 		if (this.keyRight.isKeyDown()) this.motionX = this.speed;
 
 		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastShot>600) {
+			if (!djinn.gameStart) return;
 			this.playerShotReady = true;
 			this.lastShot = djinn.getSystemTime();
 		}

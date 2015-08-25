@@ -9,7 +9,7 @@ public class World {
 	public ArrayList<Entity> entitiesToBeRemoved = new ArrayList<Entity>();
 	public int initialNumEnemies;
 	
-	public Keybind keySpace;
+	public Keybind keyReturn;
 	
 	public World(Djinn djinn){
 		
@@ -19,7 +19,7 @@ public class World {
 		this.entities.addAll(djinn.EnemyList);
 		
 		this.initialNumEnemies = djinn.EnemyList.size();
-		this.keySpace = new Keybind(Keyboard.KEY_SPACE, "Spacebar");
+		this.keyReturn = new Keybind(Keyboard.KEY_RETURN, "Return");
 	}
 	
 	public void run(Djinn djinn) {
@@ -49,7 +49,7 @@ public class World {
 	private void handleInput(Djinn djinn) {
 		if (djinn.gameStart) return;
  
-		if (this.keySpace.isKeyDown()) {
+		if (this.keyReturn.isKeyDown()) {
 			djinn.gameStart = true;
 		} 
 	}

@@ -19,7 +19,6 @@ public class Djinn {
 	// Entity variables
 	public EntityPlayer thePlayer;
 	public EntityPlayerShot playerShot;
-	//public EntityBall theBall;
 	public EntityDivider theDivider;
 	public ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
 	public EntityBlockHandler blockHandler;
@@ -38,7 +37,6 @@ public class Djinn {
 	private static void initEntities() {
 		instance = new Djinn();
 		instance.thePlayer = new EntityPlayer(instance);
-		//instance.theBall = new EntityBall(instance);
 		instance.theDivider = new EntityDivider(instance);
 		
 		// Add enemies
@@ -100,10 +98,12 @@ public class Djinn {
 	}
 	
 	public void gameReset() {
-		instance.gameStart = false;
 		instance.thePlayer.width -= 10;
-//		instance.theBall.posX = instance.thePlayer.posX + (instance.thePlayer.width/2);
-//		instance.theBall.posY = instance.thePlayer.posY - instance.theBall.height;
+
+		while (!instance.blockHandler.newBlockReady) {
+			instance.blockHandler.onUpdate(instance);
+		}
+		instance.gameStart = false;
 	}
 	
 	public long getSystemTime() {

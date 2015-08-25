@@ -27,6 +27,8 @@ public class EntityBlockHandler {
 	public int tempBlockRotation;
 	
 	public boolean newBlockReady;
+	public long lastBlock;
+	
 	public ArrayList<Rectangle> blockList = new ArrayList<Rectangle>();
 	public HashMap<Integer, ArrayList<Rectangle>> blockHeightMap = new HashMap<Integer, ArrayList<Rectangle>>();
 	public ArrayList<Rectangle> blocksToBeRemoved = new ArrayList<Rectangle>();
@@ -37,6 +39,7 @@ public class EntityBlockHandler {
 	public Keybind keyA;
 	public Keybind keyS;
 	public Keybind keyD;
+	public Keybind keyReturn;
 	public Keybind keySpace;
 	public long lastkeyW;
 	public long lastkeyA;
@@ -50,6 +53,7 @@ public class EntityBlockHandler {
 		this.keyA = new Keybind(Keyboard.KEY_A, "Left");
 		this.keyS = new Keybind(Keyboard.KEY_S, "Down");
 		this.keyD = new Keybind(Keyboard.KEY_D, "Right");
+		this.keyReturn = new Keybind(Keyboard.KEY_RETURN, "Return");
 		this.keySpace = new Keybind(Keyboard.KEY_SPACE, "Spacebar");
 				
 		this.width = 28F;
@@ -69,6 +73,7 @@ public class EntityBlockHandler {
 		this.currentBlockRotation = random.nextInt(4); 
 		
 		this.newBlockReady = true;
+		
 		this.removeRowReady = false;
 		this.numBlocks = 0;
 	}
@@ -84,6 +89,8 @@ public class EntityBlockHandler {
 
 	public void addBlock(Djinn djinn, int rotation) {
 		if(this.newBlockReady){
+			if (djinn.getSystemTime()-this.lastBlock<20) Djinn.isRunning = false; // Need Game over screen
+
 			this.currType = this.nextType;
 			this.nextType = EntityBlockType.values()[random.nextInt(numBlockTypes)];
 			
@@ -97,12 +104,14 @@ public class EntityBlockHandler {
 					}
 				}
 			}
-			this.numBlocks += 4;
+						
+			this.numBlocks = blockList.size();
 			this.newBlockReady = false;
+			this.lastBlock = djinn.getSystemTime();
 		}
 	}
 
-	private void moveEntity(Djinn djinn, float mx, float my) {
+	public void moveEntity(Djinn djinn, float mx, float my) {
 		this.refPosX += mx;
 		this.refPosY += my;
 	}
@@ -123,7 +132,10 @@ public class EntityBlockHandler {
 	}
 
 	private void handleInput(Djinn djinn) {
-		if (djinn.gameStart) this.motionY = -this.speed;
+		if (!djinn.gameStart) {
+			this.motionY = 0;
+			return;
+		}
 		this.motionX = 0;
 		
 		if (this.keyW.isKeyDown() && djinn.getSystemTime()-this.lastkeyW>150) {
@@ -149,23 +161,26 @@ public class EntityBlockHandler {
 			this.refPosX += this.width;
 			this.lastkeyD = djinn.getSystemTime();
 		}
+		
+		if (this.keyReturn.isKeyDown()) {
+			this.motionY = -this.speed;
+		}
+		
+		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastkeySpace>100) {
+			if (!djinn.gameStart) return;
+			
+			this.motionY = -this.speed*14;		
+			this.lastkeySpace = djinn.getSystemTime();
+		}
 	}
 
-	
 	private void handleCollisions(Djinn djinn) {
 		
-		boolean collisionWithDivider = false;
-		collisionWithDividerCheck:
-			for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
-				if (blockList.get(currentBlock).intersects(djinn.theDivider.rect)) {
-					collisionWithDivider = true;
-					break collisionWithDividerCheck;
-				}
-			}
-		
+		boolean collisionWithDivider = checkCollisionWithDivider(djinn);
+				
 		if (collisionWithDivider) {
 			this.setAndRespawn(djinn);
-		} 
+		}
 		
 		else {
 			boolean collisionWithBlock = checkCollisionWithBlock(djinn);
@@ -207,6 +222,15 @@ public class EntityBlockHandler {
 		}		
 	}
 	
+	private boolean checkCollisionWithDivider(Djinn djinn) {
+		for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
+			if (blockList.get(currentBlock).intersects(djinn.theDivider.rect)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private boolean checkCollisionWithBlock(Djinn djinn) {
 		for (int currentBlock = this.numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
 			for (int blockIndex = 0; blockIndex < blockList.size()-4; blockIndex++) {
@@ -228,12 +252,17 @@ public class EntityBlockHandler {
 	}
 	
 	private void setAndRespawn(Djinn djinn) {
-		this.refPosY += this.speed;
-		this.setBounds();
+		while (this.checkCollisionWithDivider(djinn) || this.checkCollisionWithBlock(djinn)) {
+			this.refPosY += 1.0F;
+			this.setBounds();
+		}
+		
 		this.checkRows(djinn);
 		if (this.removeRowReady) this.removeRow(djinn); 
+		
 		this.newBlockReady = true;
 		this.currentBlockRotation = random.nextInt(4); 
+		this.motionY = -this.speed;
 	}
 	
 	private void checkRows(Djinn djinn) {
@@ -246,7 +275,6 @@ public class EntityBlockHandler {
 				if (blockHeightMap.get(currentRowHeight).size() == 16) {
 					blocksToBeRemoved.addAll(blockHeightMap.get(currentRowHeight));
 					this.removeRowReady = true;
-		
 				}
 			} else {
 				blockHeightMap.put(currentRowHeight, new ArrayList<Rectangle>());
@@ -257,8 +285,33 @@ public class EntityBlockHandler {
 	
 	private void removeRow(Djinn djinn) {
 		blockList.removeAll(blocksToBeRemoved);
-		this.numBlocks -= blocksToBeRemoved.size();
+		
+		for (int remainingBlock = 0; remainingBlock < blockList.size(); remainingBlock++) {
+			if (blockList.get(remainingBlock).y > blocksToBeRemoved.get(0).y) {
+				blockList.get(remainingBlock).y -= this.height;
+			}
+		}
 		blocksToBeRemoved.clear();
 		this.removeRowReady = false;
+		
+		this.resetHeightMap(djinn);
+	}
+	
+	private void resetHeightMap(Djinn djinn) {
+		blockHeightMap.clear();
+		
+		for (int currentBlock = 0; currentBlock < blockList.size(); currentBlock++) {
+			int currentRowHeight = blockList.get(currentBlock).y;
+			
+			if (blockHeightMap.containsKey(currentRowHeight)) {
+				blockHeightMap.get(currentRowHeight).add(blockList.get(currentBlock));
+
+			} else {
+				blockHeightMap.put(currentRowHeight, new ArrayList<Rectangle>());
+				blockHeightMap.get(currentRowHeight).add(blockList.get(currentBlock));
+			}
+		}
+		
+		this.numBlocks = blockList.size();
 	}
 }

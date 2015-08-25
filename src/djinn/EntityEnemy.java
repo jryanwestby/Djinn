@@ -4,6 +4,8 @@ import org.lwjgl.input.Keyboard;
 
 public class EntityEnemy extends Entity {
 
+	public Keybind keyA;
+	public Keybind keyD;
 	public Keybind keyLeft;
 	public Keybind keyRight;
 	public int maxDistLeft;
@@ -19,8 +21,10 @@ public class EntityEnemy extends Entity {
 		this.maxDistLeft = (int) (width*2);
 		this.maxDistRight = (int) (width*2);
 		
-		this.keyLeft = new Keybind(Keyboard.KEY_A, "Left");
-		this.keyRight = new Keybind(Keyboard.KEY_D, "Right");
+		this.keyA = new Keybind(Keyboard.KEY_A, "A");
+		this.keyD = new Keybind(Keyboard.KEY_D, "D");
+		this.keyLeft = new Keybind(Keyboard.KEY_LEFT, "Left");
+		this.keyRight = new Keybind(Keyboard.KEY_RIGHT, "Right");
 	}
 
 	@Override
@@ -32,15 +36,21 @@ public class EntityEnemy extends Entity {
 	}
 
 	private void handleInput(Djinn djinn) {
+		if (!djinn.gameStart) {
+			this.motionX = 0;
+			this.motionY = 0;
+			return;
+		}
+
 		this.motionX = 0;
 		this.motionY = 0;
 		
-		if (this.keyLeft.isKeyDown() && this.maxDistLeft != 0) {
+		if (this.keyA.isKeyDown() || this.keyRight.isKeyDown()) {
 			this.motionX = -this.speed/16;
 			this.maxDistLeft -= 1;
 			this.maxDistRight += 1;
 		}
-		if (this.keyRight.isKeyDown() && this.maxDistRight != 0) {
+		if (this.keyD.isKeyDown() || this.keyLeft.isKeyDown()) {
 			this.motionX = this.speed/16;
 			this.maxDistRight -= 1;
 			this.maxDistLeft += 1;
@@ -60,15 +70,7 @@ public class EntityEnemy extends Entity {
 		}
 	}
 	
-	private void handleCollisions(Djinn djinn) {
-	
-//		boolean collisionWithBall = this.rect.intersects(djinn.theBall.rect);
-//		if (collisionWithBall && djinn.getSystemTime()-this.lastCollision>1000) {
-//			djinn.theBall.bounceY();
-//			djinn.theWorld.entitiesToBeRemoved.add(this);
-//			this.lastCollision = djinn.getSystemTime();
-//		}
-		
+	private void handleCollisions(Djinn djinn) {	
 		if (djinn.theWorld.entities.contains(djinn.playerShot)) {
 			boolean collisionWithPlayerShot = this.rect.intersects(djinn.playerShot.rect);
 			if (collisionWithPlayerShot) {
@@ -77,7 +79,7 @@ public class EntityEnemy extends Entity {
 			}
 		}
 	}
-	
+
 	@Override
 	public void moveEntity(Djinn djinn, float mx, float my) {
 		if (this.maxDistLeft <= 0) {
