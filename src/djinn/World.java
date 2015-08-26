@@ -9,7 +9,6 @@ public class World {
 	public ArrayList<Entity> entitiesToBeRemoved = new ArrayList<Entity>();
 	public int initialNumEnemies;
 	
-	public Keybind keyReturn;
 	
 	public World(Djinn djinn){
 		
@@ -19,12 +18,9 @@ public class World {
 		this.entities.addAll(djinn.EnemyList);
 		
 		this.initialNumEnemies = djinn.EnemyList.size();
-		this.keyReturn = new Keybind(Keyboard.KEY_RETURN, "Return");
 	}
 	
 	public void run(Djinn djinn) {
-		handleInput(djinn);
-		
 		if (djinn.thePlayer.playerShotReady) {
 			this.entities.add(djinn.playerShot);
 			djinn.thePlayer.playerShotReady = false;
@@ -44,15 +40,5 @@ public class World {
 			this.entities.remove(entity);
 			djinn.EnemyList.remove(entity);
 		}
-	}
-	
-	private void handleInput(Djinn djinn) {
-		if (djinn.gameStart) return;
- 
-		if (this.keyReturn.isKeyDown()) {
-			djinn.gameStart = true;
-		} 
-	}
-	
-	
+	}	
 }

@@ -1,6 +1,7 @@
 package djinn;
 
 import java.util.ArrayList;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
@@ -23,8 +24,10 @@ public class Djinn {
 	public ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
 	public EntityBlockHandler blockHandler;
 	public World theWorld;
+	public TitleScreen titleScreen;
 	
 	// State variables
+	public boolean newGame = true;
 	public boolean gameStart = false;
 	
 	public static void main(String[] args) {
@@ -47,6 +50,8 @@ public class Djinn {
 		}
 		
 		instance.blockHandler = new EntityBlockHandler(instance);
+		
+		instance.titleScreen = new TitleScreen(instance);
 		instance.theWorld = new World(instance);
 	}
 	
@@ -56,6 +61,7 @@ public class Djinn {
 			Display.setInitialBackground(1.0F, 1.0F, 1.0F);
 			Display.setTitle(instance.TITLE);
 			Display.create();
+			
 		} catch (LWJGLException e) {
 			isRunning = false;
 			e.printStackTrace();
@@ -66,8 +72,13 @@ public class Djinn {
 		while (!Display.isCloseRequested() && isRunning) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 			GL11.glLoadIdentity();
-			instance.init2D(); // Sets up camera 
-			instance.theWorld.run(instance);
+			
+			instance.init2D(); // Sets up camera
+			
+			if (instance.newGame) instance.titleScreen.run(instance);
+			else if (instance.gameStart){
+				instance.theWorld.run(instance);
+			}
 			
 			Display.sync(60);
 			Display.update();
@@ -103,7 +114,6 @@ public class Djinn {
 		while (!instance.blockHandler.newBlockReady) {
 			instance.blockHandler.onUpdate(instance);
 		}
-		instance.gameStart = false;
 	}
 	
 	public long getSystemTime() {
