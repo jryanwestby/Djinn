@@ -11,7 +11,7 @@ public class EntityEnemyShot extends Entity {
 	
 	@Override
 	public void onUpdate(Djinn djinn) {
-		if (!djinn.gameStart) djinn.theWorld.entitiesToBeRemoved.add(this);
+		if (!djinn.theWorld.gameStart) djinn.theWorld.entitiesToBeRemoved.add(this);
 		super.onUpdate(djinn);		
 		handleCollisions(djinn);
 
@@ -26,7 +26,7 @@ public class EntityEnemyShot extends Entity {
 		
 		boolean collisionWithPlayer = this.rect.intersects(djinn.thePlayer.rect);
 		if (collisionWithPlayer) {
-			djinn.gameReset();
+			djinn.theWorld.gameReset(djinn);
 
 			djinn.theWorld.entitiesToBeRemoved.add(this);
 		}

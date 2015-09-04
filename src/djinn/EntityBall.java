@@ -46,7 +46,7 @@ public class EntityBall extends Entity{
 		
 		boolean collisionWithDivider = this.rect.intersects(djinn.theDivider.rect);
 		if (collisionWithDivider) {
-			djinn.gameReset();
+			djinn.theWorld.gameReset(djinn);
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class EntityBall extends Entity{
 	}
 	
 	private void handleInput(Djinn djinn) {
-		if (djinn.gameStart) return;
+		if (djinn.theWorld.gameStart) return;
 		else {
 			this.motionX = 0;
 			this.motionY = 0;
@@ -72,7 +72,7 @@ public class EntityBall extends Entity{
 		}
  
 		if (this.keySpace.isKeyDown()) {
-			djinn.gameStart = true;
+			djinn.theWorld.gameStart = true;
 			this.motionX = this.speed;
 			this.motionY = -this.speed;
 		} 

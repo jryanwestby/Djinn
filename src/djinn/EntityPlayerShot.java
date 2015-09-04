@@ -9,4 +9,15 @@ public class EntityPlayerShot extends Entity{
 		this.posX = x;
 		this.posY = y;
 	}
+	
+	@Override
+	public void onUpdate(Djinn djinn) {
+		super.onUpdate(djinn);
+		handleCollisions(djinn);
+		}
+	
+	private void handleCollisions(Djinn djinn) {
+		// if playershot runs offscreen
+		// turn off playershot flag in entityplayer
+	}
 }

@@ -27,7 +27,6 @@ public class EntityPlayer extends Entity {
 	public void onUpdate(Djinn djinn) {
 		super.onUpdate(djinn);
 		handleInput(djinn);
-		addPlayerShot(djinn);
 		
 		if (this.width < 8.0F) {
 			Djinn.isRunning = false; // Game over
@@ -36,7 +35,7 @@ public class EntityPlayer extends Entity {
 	}
 
 	private void handleInput(Djinn djinn) {
-		if (!djinn.gameStart) {
+		if (!djinn.theWorld.gameStart) {
 			this.posX = (djinn.displayWidth/2);
 			this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
 			return;
@@ -49,18 +48,13 @@ public class EntityPlayer extends Entity {
 		if (this.keyRight.isKeyDown()) this.motionX = this.speed;
 
 		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastShot>600) {
-			if (!djinn.gameStart) return;
-			this.playerShotReady = true;
-			this.lastShot = djinn.getSystemTime();
+			addPlayerShot(djinn);
 		}
-
 	}
+
 	
 	private void addPlayerShot(Djinn djinn) {
-		if (!djinn.gameStart) return;
-		else if (this.playerShotReady) {
-			djinn.playerShot = new EntityPlayerShot(djinn, djinn.thePlayer.posX+djinn.thePlayer.width/2, djinn.thePlayer.posY);
-		}
+		djinn.playerShot = new EntityPlayerShot(djinn, djinn.thePlayer.posX+djinn.thePlayer.width/2, djinn.thePlayer.posY);
 	}
 	
 	@Override
