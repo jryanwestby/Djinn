@@ -7,7 +7,7 @@ public class EntityPlayer extends Entity {
 	public Keybind keyRight;
 	public Keybind keySpace;
 	public long lastShot;
-	public boolean playerShotReady = false;
+	public boolean shotActive;
 	
 	public EntityPlayer(Djinn djinn) {
 		super(djinn);
@@ -49,6 +49,7 @@ public class EntityPlayer extends Entity {
 
 		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastShot>600) {
 			addPlayerShot(djinn);
+			this.shotActive = true;
 		}
 	}
 

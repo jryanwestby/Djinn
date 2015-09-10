@@ -58,24 +58,23 @@ public class EntityEnemy extends Entity {
 	}
 	
 	private void handleCollisions(Djinn djinn) {	
-		// if playershot flag  
+		if (djinn.thePlayer.shotActive) {
 			boolean collisionWithPlayerShot = this.rect.intersects(djinn.playerShot.rect);
 			if (collisionWithPlayerShot) {
-				djinn.theWorld.entitiesToBeRemoved.add(djinn.playerShot);
-				djinn.theWorld.entitiesToBeRemoved.add(this);
+				djinn.thePlayer.shotActive = false;
+				djinn.theWorld.enemiesToBeRemoved.add(this);
 			}
-		
+		}
 	}
 	
 	public void addEnemyShot(Djinn djinn) {
 		if (djinn.theWorld.gameStart){
-			if (djinn.theWorld.enemyShotList.size() > 0) djinn.theWorld.enemyShotList.remove(0); // This is a hack that limits the number of shots being added
-			
-			int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies);
+		
+			int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies*70);
 		 	randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
-
-			if (randNum == randEnemy){ // djinn.theWorld.entities.contains(djinn.EnemyList.get(randEnemy))) { // This logic limits the amount of shots being produced
-				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 			// Add the initialized shot to the entities ArrayList
+		 	
+			if (randNum==randEnemy) { // This logic limits the amount of shots being produced
+				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, djinn.EnemyList.get(randEnemy).posX, djinn.EnemyList.get(randEnemy).posY)); 
 			}
 		}
 	}

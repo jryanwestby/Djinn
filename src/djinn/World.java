@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public class World {
 	public ArrayList<Entity> enemyShotList = new ArrayList<Entity>();
-	public ArrayList<Entity> entitiesToBeRemoved = new ArrayList<Entity>();
+	public ArrayList<Entity> enemiesToBeRemoved = new ArrayList<Entity>();
+	public ArrayList<Entity> enemyShotsToBeRemoved = new ArrayList<Entity>();
 	public int initialNumEnemies;
 	
 	public boolean newGame = true;
@@ -29,21 +30,32 @@ public class World {
 			enemy.onUpdate(djinn);			// Update all enemies
 		}
 		
-		// if flag for playerShot, update 
-		djinn.playerShot.onUpdate(djinn);
+		if (djinn.thePlayer.shotActive){
+			djinn.playerShot.onUpdate(djinn);
+		}
+		djinn.thePlayer.onUpdate(djinn);
+		djinn.theDivider.onUpdate(djinn);
 		djinn.blockHandler.onUpdate(djinn);
 		
-		for (Entity entity : this.entitiesToBeRemoved) {
-			djinn.EnemyList.remove(entity);
+		for (Entity enemy : this.enemiesToBeRemoved) {
+			djinn.EnemyList.remove(enemy);
+		}
+		
+		for (Entity shot : this.enemyShotsToBeRemoved) {
+			djinn.theWorld.enemyShotList.remove(shot);
+		}
+		
+		if (!djinn.thePlayer.shotActive) {
+			djinn.playerShot = null;
 		}
 	}
 	
 	public void gameReset(Djinn djinn) {
 		djinn.thePlayer.width -= 10;
-
-		while (!djinn.blockHandler.newBlockReady) {
-			djinn.blockHandler.onUpdate(djinn);
-		}
+//
+//		while (!djinn.blockHandler.newBlockReady) {
+//			djinn.blockHandler.onUpdate(djinn);
+//		}
 	}
 }
 

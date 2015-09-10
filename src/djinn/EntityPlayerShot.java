@@ -15,9 +15,9 @@ public class EntityPlayerShot extends Entity{
 		super.onUpdate(djinn);
 		handleCollisions(djinn);
 		}
-	
+ 	
 	private void handleCollisions(Djinn djinn) {
-		// if playershot runs offscreen
-		// turn off playershot flag in entityplayer
+		if (this.posY < 0)
+			djinn.thePlayer.shotActive = false;
 	}
 }
