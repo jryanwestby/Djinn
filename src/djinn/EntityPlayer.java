@@ -35,7 +35,7 @@ public class EntityPlayer extends Entity {
 	}
 
 	private void handleInput(Djinn djinn) {
-		if (!djinn.theWorld.gameStart) {
+		if (!djinn.theWorld.playState) {
 			this.posX = (djinn.displayWidth/2);
 			this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
 			return;

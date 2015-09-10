@@ -132,7 +132,7 @@ public class EntityBlockHandler {
 	}
 
 	private void handleInput(Djinn djinn) {
-		if (!djinn.theWorld.gameStart) {
+		if (!djinn.theWorld.playState) {
 			this.motionY = 0;
 			return;
 		}
@@ -167,8 +167,6 @@ public class EntityBlockHandler {
 		}
 		
 		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastkeySpace>100) {
-			if (!djinn.theWorld.gameStart) return;
-			
 			this.motionY = -this.speed*14;		
 			this.lastkeySpace = djinn.getSystemTime();
 		}

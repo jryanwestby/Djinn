@@ -11,7 +11,7 @@ public class EntityEnemyShot extends Entity {
 	
 	@Override
 	public void onUpdate(Djinn djinn) {
-		if (!djinn.theWorld.gameStart) djinn.theWorld.enemyShotsToBeRemoved.add(this);
+		if (!djinn.theWorld.playState) djinn.theWorld.enemyShotsToBeRemoved.add(this);
 		super.onUpdate(djinn);		
 		handleCollisions(djinn);
 	}

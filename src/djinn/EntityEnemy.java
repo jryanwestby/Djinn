@@ -36,7 +36,7 @@ public class EntityEnemy extends Entity {
 	}
 
 	private void handleInput(Djinn djinn) {
-		if (!djinn.theWorld.gameStart) {
+		if (!djinn.theWorld.playState) {
 			this.motionX = 0;
 			this.motionY = 0;
 			return;
@@ -68,7 +68,7 @@ public class EntityEnemy extends Entity {
 	}
 	
 	public void addEnemyShot(Djinn djinn) {
-		if (djinn.theWorld.gameStart){
+		if (djinn.theWorld.playState){
 		
 			int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies*70);
 		 	randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
