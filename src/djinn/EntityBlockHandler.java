@@ -89,7 +89,11 @@ public class EntityBlockHandler {
 
 	public void addBlock(Djinn djinn, int rotation) {
 		if(this.newBlockReady){
-			if (djinn.getSystemTime()-this.lastBlock<20) Djinn.isRunning = false; // Need Game over screen
+			if (djinn.getSystemTime()-this.lastBlock<20) {
+				djinn.theWorld.playState = false;
+				djinn.theWorld.readyState = false;
+				djinn.theWorld.endState = true;
+			}
 
 			this.currType = this.nextType;
 			this.nextType = EntityBlockType.values()[random.nextInt(numBlockTypes)];
@@ -136,6 +140,7 @@ public class EntityBlockHandler {
 			this.motionY = 0;
 			return;
 		}
+		if (djinn.theWorld.keyR.isKeyDown()) this.motionY = -this.speed;
 		this.motionX = 0;
 		
 		if (this.keyW.isKeyDown() && djinn.getSystemTime()-this.lastkeyW>150) {
@@ -160,10 +165,6 @@ public class EntityBlockHandler {
 			this.tempRefPosX = this.refPosX;
 			this.refPosX += this.width;
 			this.lastkeyD = djinn.getSystemTime();
-		}
-		
-		if (this.keyReturn.isKeyDown()) {
-			this.motionY = -this.speed;
 		}
 		
 		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastkeySpace>100) {

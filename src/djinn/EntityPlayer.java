@@ -28,9 +28,10 @@ public class EntityPlayer extends Entity {
 		super.onUpdate(djinn);
 		handleInput(djinn);
 		
-		if (this.width < 8.0F) {
-			Djinn.isRunning = false; // Game over
-			//TODO Program actual game over notification
+		if (this.width == 86.0F) {
+			djinn.theWorld.playState = false;
+			djinn.theWorld.readyState = false;
+			djinn.theWorld.endState = true;
 		}
 	}
 
@@ -50,6 +51,7 @@ public class EntityPlayer extends Entity {
 		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastShot>600) {
 			addPlayerShot(djinn);
 			this.shotActive = true;
+			this.lastShot = djinn.getSystemTime();
 		}
 	}
 

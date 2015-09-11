@@ -24,6 +24,7 @@ public class Djinn {
 	public ArrayList<EntityEnemy> EnemyList = new ArrayList<EntityEnemy>();
 	public EntityBlockHandler blockHandler;
 	public World theWorld;
+	public TextHandler textHandler;
 	
 	public static void main(String[] args) {
 		initEntities();
@@ -32,7 +33,7 @@ public class Djinn {
 		cleanUp();
 	}
 
-	private static void initEntities() {
+	public static void initEntities() {
 		instance = new Djinn();
 		instance.thePlayer = new EntityPlayer(instance);
 		instance.theDivider = new EntityDivider(instance);
@@ -46,6 +47,7 @@ public class Djinn {
 		
 		instance.blockHandler = new EntityBlockHandler(instance);
 		instance.theWorld = new World(instance);
+		instance.textHandler = new TextHandler(instance);
 	}
 	
 	private static void initDisplay() {
@@ -71,6 +73,7 @@ public class Djinn {
 			
 			Display.sync(60);
 			Display.update();
+			
 		}
 	}
 	
