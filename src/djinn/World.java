@@ -15,6 +15,8 @@ public class World {
 	public boolean playState;
 	public boolean endState;
 	
+	public int gameChoice;
+	
 	public Keybind keyR;
 	public Keybind keyReturn;
 	public Keybind keyUp;
@@ -26,6 +28,7 @@ public class World {
 		this.initialNumEnemies = djinn.EnemyList.size();
 		
 		this.titleState = true;
+		this.gameChoice = 0;
 		
 		this.keyR = new Keybind(Keyboard.KEY_R, "R");
 		this.keyReturn = new Keybind(Keyboard.KEY_RETURN, "Return");
@@ -36,9 +39,26 @@ public class World {
 	public void run(Djinn djinn) {	
 
 		if (this.titleState) {
-			djinn.textHandler.titleText(djinn);			
+			if (djinn.theWorld.enemyShotList.size() == 0) {
+				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
+				djinn.theWorld.enemyShotList.get(0).motionY = 0;
+			}
+			
+			djinn.textHandler.titleText(djinn);
+			djinn.theWorld.enemyShotList.get(0).onUpdate(djinn);
+			
+			if (this.keyDown.isKeyDown() && djinn.getSystemTime()-this.lastkeyDown>120) {
+				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==562) ? 462 : djinn.theWorld.enemyShotList.get(0).posY+50;
+				this.gameChoice = (this.gameChoice == 2) ? 0 : this.gameChoice+1;
+			}
+			
+			if (this.keyUp.isKeyDown() && djinn.getSystemTime()-this.lastkeyUp>120) {
+				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==462) ? 562 : djinn.theWorld.enemyShotList.get(0).posY-50;
+				this.gameChoice = (this.gameChoice == 0) ? 2 : this.gameChoice+1;
+			}
 			
 			if (this.keyReturn.isKeyDown()) {
+				djinn.theWorld.enemyShotList.clear();
 				this.titleState = false;
 				this.readyState = true;
 			}
