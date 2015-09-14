@@ -66,7 +66,7 @@ public class TextHandler {
 		endFontLg.drawString(130, 300, "GAME OVER", Color.black);
 		
 		endFontSm.drawString(100, 400, "Select Your Fate:", Color.black);
-		endFontSm.drawString(200, 450, "Another Try", Color.black);
-		endFontSm.drawString(200, 500, "End It", Color.black);
+		endFontSm.drawString(160, 450, "Another Try", Color.black);
+		endFontSm.drawString(160, 500, "End It", Color.black);
 	}
 }

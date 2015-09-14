@@ -73,11 +73,10 @@ public class Djinn {
 			
 			Display.sync(60);
 			Display.update();
-			
 		}
 	}
 	
-	private static void cleanUp() {
+	public static void cleanUp() {
 		isRunning = false;
 		Display.destroy();		
 	}
