@@ -70,7 +70,7 @@ public class EntityEnemy extends Entity {
 	public void addEnemyShot(Djinn djinn) {
 		if (djinn.theWorld.playState){
 		
-			int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies*70);
+			int randNum = getRandRange(0, djinn.theWorld.initialNumEnemies*15);
 		 	randEnemy = getRandRange(0, djinn.EnemyList.size()); // Choose a random enemy from the EnemyList
 		 	
 			if (randNum==randEnemy) { // This logic limits the amount of shots being produced

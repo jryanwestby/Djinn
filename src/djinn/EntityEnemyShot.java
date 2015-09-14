@@ -4,7 +4,12 @@ public class EntityEnemyShot extends Entity {
 	public EntityEnemyShot(Djinn djinn, float x, float y) {
 		super(djinn);
 		
-		this.motionY = (float) this.speed/4F;
+		if (djinn.theWorld.gameChoice == 0) {
+			this.motionY = (float) this.speed/2F;
+		} else {
+			this.motionY = (float) this.speed/4F;
+		}
+		
 		this.posX = x;
 		this.posY = y;
 	}

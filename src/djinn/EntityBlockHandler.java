@@ -140,7 +140,11 @@ public class EntityBlockHandler {
 			this.motionY = 0;
 			return;
 		}
-		if (djinn.theWorld.keyR.isKeyDown()) this.motionY = -this.speed;
+		if (djinn.theWorld.keyR.isKeyDown()) {
+			if (djinn.theWorld.gameChoice==1) {
+				this.motionY = -this.speed*2;
+			} else this.motionY = -this.speed;
+		}
 		this.motionX = 0;
 		
 		if (this.keyW.isKeyDown() && djinn.getSystemTime()-this.lastkeyW>150) {
