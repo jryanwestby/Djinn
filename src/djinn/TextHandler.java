@@ -17,6 +17,7 @@ public class TextHandler {
 	
 	TrueTypeFont defenderFont;
 	TrueTypeFont tetronFont;
+	TrueTypeFont djinnFont;
 	
 	private boolean antiAlias = false;
 
@@ -92,12 +93,13 @@ public class TextHandler {
 	
 	public void drawDefenderText(Djinn djinn) {
 		int playerLives = (int)(80-djinn.thePlayer.width)/6;
-		defenderFont.drawString(60, 550, "Shoot All Invaders!", Color.black);
-		defenderFont.drawString(60, 600, "Lives Left: " + playerLives, Color.black);		
+		defenderFont.drawString(10, 10, "Lives: " + playerLives, Color.black);		
 		
-		defenderFont.drawString(60, 700	, "Arrow Keys: Move", Color.black);
-		defenderFont.drawString(60, 750	, "Space: Shoot", Color.black);
-		defenderFont.drawString(60, 800	, "R: Begin", Color.black);
+		defenderFont.drawString(60, 550, "Shoot All Invaders!", Color.black);
+		
+		defenderFont.drawString(60, 625	, "Arrow Keys: Move", Color.black);
+		defenderFont.drawString(60, 675	, "Spacebar: Shoot", Color.black);
+		defenderFont.drawString(60, 725	, "R: Begin", Color.black);
 	}
 	
 	public void initTetronText(Djinn djinn) {
@@ -124,6 +126,36 @@ public class TextHandler {
 		
 		tetronFont.drawString(60, 250, "A and D: Move Block", Color.black);
 		tetronFont.drawString(60, 300, "W and S: Rotate Block", Color.black);
-		tetronFont.drawString(60, 350, "Space: Speed Up Block", Color.black);
+		tetronFont.drawString(60, 350, "Spacebar: Speed Up Block", Color.black);
+	}
+	
+	public void initDjinnText(Djinn djinn) {
+		Color.white.bind();
+		
+		try {
+			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
+	
+			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+			awtFont2 = awtFont2.deriveFont(20f); // set font size
+			djinnFont = new TrueTypeFont(awtFont2, antiAlias);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		drawDjinnText(djinn);
+		djinnFont.drawString(60, 275, "Shoot All Invaders!", Color.black);
+		djinnFont.drawString(60, 325, "Arrow Keys: Move", Color.black);
+		djinnFont.drawString(60, 375, "Spacebar: Shoot", Color.black);
+		djinnFont.drawString(60, 425, "R: Begin", Color.black);
+		
+		djinnFont.drawString(60, 725, "A and D: Move Block", Color.black);
+		djinnFont.drawString(60, 775, "W and S: Rotate Block", Color.black);
+		djinnFont.drawString(60, 825, "Spacebar: Speed Up Block", Color.black);
+	}
+
+	public void drawDjinnText(Djinn djinn) {
+		int playerLives = (int)(80-djinn.thePlayer.width)/6;
+		djinnFont.drawString(10, 10, "Lives: " + playerLives, Color.black);		
 	}
 }

@@ -1,8 +1,6 @@
 package djinn;
 
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.Color;
-
 import java.util.ArrayList;
 
 public class World {
@@ -81,10 +79,7 @@ public class World {
 			if (gameChoice == 0) {
 								
 				// Display start text				
-				if (!this.playState){
-					djinn.textHandler.initDefenderText(djinn);
-				}
-				
+				if (!this.playState) djinn.textHandler.initDefenderText(djinn);
 				djinn.textHandler.drawDefenderText(djinn);
 				
 				// Update Entities
@@ -114,10 +109,7 @@ public class World {
 			
 			// Play Tetronimoes
 			else if (gameChoice == 1) {
-				if (!this.playState){
-					djinn.textHandler.initTetronText(djinn);
-				}
-				
+				if (!this.playState) djinn.textHandler.initTetronText(djinn);
 				djinn.textHandler.drawTetronText(djinn);
 				
 				djinn.blockHandler.onUpdate(djinn);
@@ -126,6 +118,9 @@ public class World {
 			
 			// Play Djinn
 			else if (gameChoice == 2) {
+				
+				if (!this.playState) djinn.textHandler.initDjinnText(djinn);
+				djinn.textHandler.drawDjinnText(djinn);
 				
 				// Update Entities
 				djinn.blockHandler.onUpdate(djinn);
