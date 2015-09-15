@@ -22,10 +22,13 @@ public class TextHandler {
 	TrueTypeFont tetronFont;
 	TrueTypeFont djinnFont;
 	
+	public int tetronLevel; 
+	
 	private boolean antiAlias = false;
 
 	
 	public TextHandler(Djinn djinn) {
+		this.tetronLevel = 1;
 	}
 	
 	public void titleText(Djinn djinn) {
@@ -125,7 +128,7 @@ public class TextHandler {
 
 	public void drawTetronText(Djinn djinn) {
 		tetronFont.drawString(60, 100, "Clear Lines for a Hi Score!", Color.black);
-		tetronFont.drawString(60, 150, "Current Level: ", Color.black);
+		tetronFont.drawString(60, 150, "Current Level: " + this.tetronLevel, Color.black);
 		
 		tetronFont.drawString(60, 250, "A and D: Move Block", Color.black);
 		tetronFont.drawString(60, 300, "W and S: Rotate Block", Color.black);

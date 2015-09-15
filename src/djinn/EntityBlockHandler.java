@@ -295,6 +295,8 @@ public class EntityBlockHandler {
 			}
 		}
 		blocksToBeRemoved.clear();
+		djinn.textHandler.tetronLevel += 1;
+		this.speed += 0.2;
 		this.removeRowReady = false;
 		
 		this.resetHeightMap(djinn);
