@@ -9,6 +9,9 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class TextHandler {
 	
+	TrueTypeFont winFontSm;
+	TrueTypeFont winFontLg;
+		
 	TrueTypeFont titleFontSm;
 	TrueTypeFont titleFontLg;
 	
@@ -158,5 +161,29 @@ public class TextHandler {
 	public void drawDjinnText(Djinn djinn) {
 		int playerLives = (int)(80-djinn.thePlayer.width)/6;
 		djinnFont.drawString(10, 10, "Lives: " + playerLives, Color.black);		
+	}
+
+	public void winText(Djinn djinn) {
+		Color.white.bind();
+		
+		try {
+			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
+	
+			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+			awtFont2 = awtFont2.deriveFont(24f); // set font size
+			winFontSm = new TrueTypeFont(awtFont2, antiAlias);
+			
+			awtFont2 = awtFont2.deriveFont(30f);
+			winFontLg = new TrueTypeFont(awtFont2, antiAlias);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		winFontLg.drawString(60, 150, "CONGRATULATIONS", Color.black);
+		winFontLg.drawString(140, 250, "YOU WIN", Color.black);
+		
+		winFontSm.drawString(80, 400, "Select Your Fate:", Color.black);
+		winFontSm.drawString(160, 450, "Again!", Color.black);
+		winFontSm.drawString(160, 500, "End It", Color.black);
 	}
 }

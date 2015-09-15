@@ -9,6 +9,7 @@ public class World {
 	public ArrayList<Entity> enemyShotsToBeRemoved = new ArrayList<Entity>();
 	public int initialNumEnemies;
 	
+	public boolean winState;
 	public boolean titleState;
 	public boolean readyState;
 	public boolean playState;
@@ -38,8 +39,39 @@ public class World {
 	}
 	
 	public void run(Djinn djinn) {	
-
-		if (this.titleState) {
+		
+		this.winState = djinn.EnemyList.isEmpty();
+		if (this.winState)	{
+			if (djinn.theWorld.enemyShotList.size() == 0) {
+				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
+				djinn.theWorld.enemyShotList.get(0).motionY = 0;
+			}
+			
+			djinn.textHandler.winText(djinn);
+			djinn.theWorld.enemyShotList.get(0).onUpdate(djinn);
+			
+			if (this.keyDown.isKeyDown() && djinn.getSystemTime()-this.lastkeyDown>300) {
+				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==512) ? 462 : djinn.theWorld.enemyShotList.get(0).posY+50;
+				this.endChoice = (this.endChoice == 1) ? 0 : this.endChoice+1;
+				this.lastkeyDown = djinn.getSystemTime();
+			}
+			
+			if (this.keyUp.isKeyDown() && djinn.getSystemTime()-this.lastkeyUp>300) {
+				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==462) ? 512 : djinn.theWorld.enemyShotList.get(0).posY-50;
+				this.endChoice = (this.endChoice == 0) ? 1 : this.endChoice-1;
+				this.lastkeyUp = djinn.getSystemTime();
+			}
+				
+			if (this.keyReturn.isKeyDown() && endChoice == 0) {
+				this.endState = false;
+				Djinn.initEntities();
+				this.titleState = true; // Restart Game
+			} else if (this.keyReturn.isKeyDown() && endChoice == 1) {
+				Djinn.isRunning = false; // End Game
+			}
+		}
+		
+		else if (this.titleState) {
 			if (djinn.theWorld.enemyShotList.size() == 0) {
 				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
 				djinn.theWorld.enemyShotList.get(0).motionY = 0;
@@ -66,6 +98,7 @@ public class World {
 				this.readyState = true;
 			}
 		}
+		
 		else if (this.readyState) {
 			
 			// R key begins game 
