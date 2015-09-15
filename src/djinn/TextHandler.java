@@ -147,7 +147,8 @@ public class TextHandler {
 		djinnFont.drawString(60, 275, "Shoot All Invaders!", Color.black);
 		djinnFont.drawString(60, 325, "Arrow Keys: Move", Color.black);
 		djinnFont.drawString(60, 375, "Spacebar: Shoot", Color.black);
-		djinnFont.drawString(60, 425, "R: Begin", Color.black);
+		
+		djinnFont.drawString(60, 450, "R: Begin", Color.black);
 		
 		djinnFont.drawString(60, 725, "A and D: Move Block", Color.black);
 		djinnFont.drawString(60, 775, "W and S: Rotate Block", Color.black);
