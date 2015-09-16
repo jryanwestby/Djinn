@@ -171,7 +171,7 @@ public class EntityBlockHandler {
 			this.lastkeyD = djinn.getSystemTime();
 		}
 		
-		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastkeySpace>100) {
+		if (this.keySpace.isKeyDown() && djinn.getSystemTime()-this.lastkeySpace>600) {
 			this.motionY = -this.speed*14;		
 			this.lastkeySpace = djinn.getSystemTime();
 		}
@@ -295,10 +295,18 @@ public class EntityBlockHandler {
 			}
 		}
 		blocksToBeRemoved.clear();
-		djinn.textHandler.tetronLevel += 1;
-		this.speed += 0.2;
-		this.removeRowReady = false;
 		
+		djinn.textHandler.tetronLevel += 1;
+		if (djinn.theWorld.gameChoice==1) this.speed += 0.2;
+		else if (djinn.theWorld.gameChoice==2) this.speed += 0.1;
+		djinn.thePlayer.width -= 6.0F;
+		
+		for (int i = 0; i < 5; i++) {
+			int randEnemyToRemove = getRandRange(0, djinn.EnemyList.size());
+			djinn.theWorld.enemiesToBeRemoved.add(djinn.EnemyList.get(randEnemyToRemove));
+		}
+		
+		this.removeRowReady = false;
 		this.resetHeightMap(djinn);
 	}
 	
@@ -318,5 +326,9 @@ public class EntityBlockHandler {
 		}
 		
 		this.numBlocks = blockList.size();
+	}
+	
+	public static int getRandRange(int min, int max) {
+		return min + (int)(Math.random() * max);
 	}
 }
