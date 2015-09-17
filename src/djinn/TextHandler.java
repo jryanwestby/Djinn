@@ -9,8 +9,8 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class TextHandler {
 	
-	TrueTypeFont winFontSm;
-	TrueTypeFont winFontLg;
+	TrueTypeFont pauseFontSm;
+	TrueTypeFont pauseFontLg;
 		
 	TrueTypeFont titleFontSm;
 	TrueTypeFont titleFontLg;
@@ -22,6 +22,9 @@ public class TextHandler {
 	TrueTypeFont tetronFont;
 	TrueTypeFont djinnFont;
 	
+	TrueTypeFont winFontSm;
+	TrueTypeFont winFontLg;
+	
 	public int tetronLevel; 
 	
 	private boolean antiAlias = false;
@@ -29,6 +32,31 @@ public class TextHandler {
 	
 	public TextHandler(Djinn djinn) {
 		this.tetronLevel = 1;
+	}
+	
+	public void pauseText(Djinn djinn) {
+		Color.white.bind();
+
+		// load font from file
+		try {
+			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
+	
+			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+			awtFont2 = awtFont2.deriveFont(24f); // set font size
+			pauseFontSm = new TrueTypeFont(awtFont2, antiAlias);
+			
+			awtFont2 = awtFont2.deriveFont(30f);
+			pauseFontLg = new TrueTypeFont(awtFont2, antiAlias);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		pauseFontLg.drawString(160, 300, "PAUSED", Color.black);
+		
+		pauseFontSm.drawString(80, 400	, "Select One:", Color.black);
+		pauseFontSm.drawString(160, 450	, "Resume", Color.black);
+		pauseFontSm.drawString(160, 500	, "Title Screen", Color.black);
+		pauseFontSm.drawString(160, 550	, "Escape", Color.black);
 	}
 	
 	public void titleText(Djinn djinn) {

@@ -9,29 +9,35 @@ public class World {
 	public ArrayList<Entity> enemyShotsToBeRemoved = new ArrayList<Entity>();
 	public int initialNumEnemies;
 	
+	public boolean pauseState;
 	public boolean winState;
 	public boolean titleState;
 	public boolean readyState;
 	public boolean playState;
 	public boolean endState;
 	
+	public int pauseChoice;
 	public int gameChoice;
 	public int endChoice;
 	
+	public Keybind keyEsc;
 	public Keybind keyR;
 	public Keybind keyReturn;
 	public Keybind keyUp;
 	public Keybind keyDown;
 	public long lastkeyUp;
 	public long lastkeyDown;
+	public long lastEnter;
 	
 	public World(Djinn djinn){
 		this.initialNumEnemies = djinn.EnemyList.size();
 		
 		this.titleState = true;
+		this.pauseChoice = 0;
 		this.gameChoice = 0;
 		this.endChoice = 0;
 		
+		this.keyEsc = new Keybind(Keyboard.KEY_ESCAPE, "Escape");
 		this.keyR = new Keybind(Keyboard.KEY_R, "R");
 		this.keyReturn = new Keybind(Keyboard.KEY_RETURN, "Return");
 		this.keyUp = new Keybind(Keyboard.KEY_UP, "Up");
@@ -39,6 +45,54 @@ public class World {
 	}
 	
 	public void run(Djinn djinn) {	
+		
+		if (this.keyEsc.isKeyDown()) {
+			djinn.theWorld.enemyShotList.clear();
+			this.winState = false;
+			this.titleState = false;
+			this.playState = false;
+			this.readyState = false;
+			this.pauseState = true;
+		}
+		
+		if (this.pauseState) {
+			if (djinn.theWorld.enemyShotList.size() == 0) {
+				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
+				djinn.theWorld.enemyShotList.get(0).motionY = 0;
+				this.pauseChoice = 0;
+			}
+			
+			djinn.textHandler.pauseText(djinn);
+			djinn.theWorld.enemyShotList.get(0).onUpdate(djinn);
+			
+			if (this.keyDown.isKeyDown() && djinn.getSystemTime()-this.lastkeyDown>300) {
+				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==562) ? 462 : djinn.theWorld.enemyShotList.get(0).posY+50;
+				this.pauseChoice = (this.pauseChoice == 2) ? 0 : this.pauseChoice+1;
+				this.lastkeyDown = djinn.getSystemTime();
+			}
+			
+			if (this.keyUp.isKeyDown() && djinn.getSystemTime()-this.lastkeyUp>300) {
+				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==462) ? 562 : djinn.theWorld.enemyShotList.get(0).posY-50;
+				this.pauseChoice = (this.pauseChoice == 0) ? 2 : this.pauseChoice-1;
+				this.lastkeyUp = djinn.getSystemTime();
+			}
+				
+			if (this.keyReturn.isKeyDown() && this.pauseChoice == 0) {
+				djinn.theWorld.enemyShotList.clear();
+				this.pauseState = false;
+				this.readyState = true;
+				this.lastEnter = djinn.getSystemTime();
+			} else if (this.keyReturn.isKeyDown() && this.pauseChoice == 1) {
+				djinn.theWorld.enemyShotList.clear();
+				this.pauseState = false;
+				Djinn.initEntities();
+				this.titleState = true;
+				this.lastEnter = djinn.getSystemTime();
+			} else if (this.keyReturn.isKeyDown() && this.pauseChoice == 2) {
+				Djinn.isRunning = false; // End Game
+			}
+		}
+		
 		
 		this.winState = djinn.EnemyList.isEmpty();
 		if (this.winState)	{
@@ -63,18 +117,21 @@ public class World {
 			}
 				
 			if (this.keyReturn.isKeyDown() && endChoice == 0) {
-				this.endState = false;
+				this.winState = false;
 				Djinn.initEntities();
 				this.titleState = true; // Restart Game
+				this.lastEnter = djinn.getSystemTime();
 			} else if (this.keyReturn.isKeyDown() && endChoice == 1) {
 				Djinn.isRunning = false; // End Game
 			}
 		}
 		
-		else if (this.titleState) {
+		
+		if (this.titleState) {
 			if (djinn.theWorld.enemyShotList.size() == 0) {
 				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
 				djinn.theWorld.enemyShotList.get(0).motionY = 0;
+				this.gameChoice = 0;
 			}
 			
 			djinn.textHandler.titleText(djinn);
@@ -92,24 +149,25 @@ public class World {
 				this.lastkeyUp = djinn.getSystemTime();
 			}
 			
-			if (this.keyReturn.isKeyDown()) {
+			if (this.keyReturn.isKeyDown() && djinn.getSystemTime()-this.lastEnter>400) {
 				djinn.theWorld.enemyShotList.clear();
 				this.titleState = false;
 				this.readyState = true;
+				
+				this.lastEnter = djinn.getSystemTime();
 			}
 		}
 		
-		else if (this.readyState) {
+		
+		if (this.readyState) {
 			
 			// R key begins game 
 			if (this.keyR.isKeyDown()) {
 				this.playState = true;
 			}
 			
-			// Update entities based on gameChoice
-			
 			// Play Defender
-			if (gameChoice == 0) {
+			if (this.gameChoice == 0) {
 								
 				// Display start text				
 				if (!this.playState) djinn.textHandler.initDefenderText(djinn);
@@ -141,7 +199,7 @@ public class World {
 			} 
 			
 			// Play Tetronimoes
-			else if (gameChoice == 1) {
+			else if (this.gameChoice == 1) {
 				if (!this.playState) djinn.textHandler.initTetronText(djinn);
 				djinn.textHandler.drawTetronText(djinn);
 				
@@ -150,7 +208,7 @@ public class World {
 			} 
 			
 			// Play Djinn
-			else if (gameChoice == 2) {
+			else if (this.gameChoice == 2) {
 				
 				if (!this.playState) djinn.textHandler.initDjinnText(djinn);
 				djinn.textHandler.drawDjinnText(djinn);
@@ -184,8 +242,9 @@ public class World {
 			}
 		}
 		
+		
 		// Game over screen
-		else if (this.endState) {
+		if (this.endState) {
 
 			if (djinn.theWorld.enemyShotList.size() == 0) {
 				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
@@ -211,6 +270,7 @@ public class World {
 				this.endState = false;
 				Djinn.initEntities();
 				this.titleState = true; // Restart Game
+				this.lastEnter = djinn.getSystemTime();
 			} else if (this.keyReturn.isKeyDown() && endChoice == 1) {
 				Djinn.isRunning = false; // End Game
 			}				
