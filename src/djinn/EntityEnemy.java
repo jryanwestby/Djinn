@@ -16,8 +16,6 @@ public class EntityEnemy extends Entity {
 		this.posX = x;
 		this.posY = y;
 		this.width *= (float) 2.5F;
-		this.maxDistLeft = (int) (width*2);
-		this.maxDistRight = (int) (width*2);
 		
 		this.lastMove = djinn.getSystemTime();
 		

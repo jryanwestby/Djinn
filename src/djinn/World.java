@@ -87,6 +87,9 @@ public class World {
 				this.pauseState = false;
 				Djinn.initEntities();
 				this.titleState = true;
+				this.gameChoice = 0;
+				djinn.menuSelector.posY = 462;
+				
 				this.lastEnter = djinn.getSystemTime();
 			} else if (this.keyReturn.isKeyDown() && this.pauseChoice == 2) {
 				Djinn.isRunning = false; // End Game
@@ -120,7 +123,11 @@ public class World {
 				this.winState = false;
 				Djinn.initEntities();
 				this.titleState = true; // Restart Game
+				this.gameChoice = 0;
+				djinn.menuSelector.posY = 462;
+				
 				this.lastEnter = djinn.getSystemTime();
+				
 			} else if (this.keyReturn.isKeyDown() && endChoice == 1) {
 				Djinn.isRunning = false; // End Game
 			}
@@ -128,29 +135,23 @@ public class World {
 		
 		
 		if (this.titleState) {
-			if (djinn.theWorld.enemyShotList.size() == 0) {
-				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
-				djinn.theWorld.enemyShotList.get(0).motionY = 0;
-				this.gameChoice = 0;
-			}
 			
+			djinn.menuSelector.onUpdate(djinn);
 			djinn.textHandler.titleText(djinn);
-			djinn.theWorld.enemyShotList.get(0).onUpdate(djinn);
 			
 			if (this.keyDown.isKeyDown() && djinn.getSystemTime()-this.lastkeyDown>300) {
-				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==562) ? 462 : djinn.theWorld.enemyShotList.get(0).posY+50;
+				djinn.menuSelector.posY = (djinn.menuSelector.posY==562) ? 462 : djinn.menuSelector.posY+50;
 				this.gameChoice = (this.gameChoice == 2) ? 0 : this.gameChoice+1;
 				this.lastkeyDown = djinn.getSystemTime();
 			}
 			
 			if (this.keyUp.isKeyDown() && djinn.getSystemTime()-this.lastkeyUp>300) {
-				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==462) ? 562 : djinn.theWorld.enemyShotList.get(0).posY-50;
+				djinn.menuSelector.posY = (djinn.menuSelector.posY==462) ? 562 : djinn.menuSelector.posY-50;
 				this.gameChoice = (this.gameChoice == 0) ? 2 : this.gameChoice-1;
 				this.lastkeyUp = djinn.getSystemTime();
 			}
 			
 			if (this.keyReturn.isKeyDown() && djinn.getSystemTime()-this.lastEnter>400) {
-				djinn.theWorld.enemyShotList.clear();
 				this.titleState = false;
 				this.readyState = true;
 				
@@ -270,6 +271,9 @@ public class World {
 				this.endState = false;
 				Djinn.initEntities();
 				this.titleState = true; // Restart Game
+				this.gameChoice = 0;
+				djinn.menuSelector.posY = 462;
+				
 				this.lastEnter = djinn.getSystemTime();
 			} else if (this.keyReturn.isKeyDown() && endChoice == 1) {
 				Djinn.isRunning = false; // End Game

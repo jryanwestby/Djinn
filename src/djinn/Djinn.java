@@ -25,6 +25,7 @@ public class Djinn {
 	public EntityBlockHandler blockHandler;
 	public World theWorld;
 	public TextHandler textHandler;
+	public EntitySelector menuSelector;
 	
 	public static void main(String[] args) {
 		initEntities();
@@ -48,6 +49,7 @@ public class Djinn {
 		instance.blockHandler = new EntityBlockHandler(instance);
 		instance.theWorld = new World(instance);
 		instance.textHandler = new TextHandler(instance);
+		instance.menuSelector = new EntitySelector(instance, 120, 462);
 	}
 	
 	private static void initDisplay() {
