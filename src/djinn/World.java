@@ -53,37 +53,33 @@ public class World {
 			this.playState = false;
 			this.readyState = false;
 			this.pauseState = true;
+			this.pauseChoice = 0;
+			djinn.menuSelector.posY = 462;
 		}
 		
+		// Pause Screen
 		if (this.pauseState) {
-			if (djinn.theWorld.enemyShotList.size() == 0) {
-				djinn.theWorld.enemyShotList.add(new EntityEnemyShot(djinn, 120, 462));
-				djinn.theWorld.enemyShotList.get(0).motionY = 0;
-				this.pauseChoice = 0;
-			}
-			
+
+			djinn.menuSelector.onUpdate(djinn);
 			djinn.textHandler.pauseText(djinn);
-			djinn.theWorld.enemyShotList.get(0).onUpdate(djinn);
 			
 			if (this.keyDown.isKeyDown() && djinn.getSystemTime()-this.lastkeyDown>300) {
-				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==562) ? 462 : djinn.theWorld.enemyShotList.get(0).posY+50;
+				djinn.menuSelector.posY = (djinn.menuSelector.posY==562) ? 462 : djinn.menuSelector.posY+50;
 				this.pauseChoice = (this.pauseChoice == 2) ? 0 : this.pauseChoice+1;
 				this.lastkeyDown = djinn.getSystemTime();
 			}
 			
 			if (this.keyUp.isKeyDown() && djinn.getSystemTime()-this.lastkeyUp>300) {
-				djinn.theWorld.enemyShotList.get(0).posY = (djinn.theWorld.enemyShotList.get(0).posY==462) ? 562 : djinn.theWorld.enemyShotList.get(0).posY-50;
+				djinn.menuSelector.posY = (djinn.menuSelector.posY==462) ? 562 : djinn.menuSelector.posY-50;
 				this.pauseChoice = (this.pauseChoice == 0) ? 2 : this.pauseChoice-1;
 				this.lastkeyUp = djinn.getSystemTime();
 			}
 				
 			if (this.keyReturn.isKeyDown() && this.pauseChoice == 0) {
-				djinn.theWorld.enemyShotList.clear();
 				this.pauseState = false;
 				this.readyState = true;
 				this.lastEnter = djinn.getSystemTime();
 			} else if (this.keyReturn.isKeyDown() && this.pauseChoice == 1) {
-				djinn.theWorld.enemyShotList.clear();
 				this.pauseState = false;
 				Djinn.initEntities();
 				this.titleState = true;
@@ -96,7 +92,7 @@ public class World {
 			}
 		}
 		
-		
+		// Win Screen
 		this.winState = djinn.EnemyList.isEmpty();
 		if (this.winState)	{
 			if (djinn.theWorld.enemyShotList.size() == 0) {
@@ -133,7 +129,7 @@ public class World {
 			}
 		}
 		
-		
+		// Title Screen
 		if (this.titleState) {
 			
 			djinn.menuSelector.onUpdate(djinn);
