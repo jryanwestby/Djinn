@@ -89,10 +89,13 @@ public class EntityBlockHandler {
 
 	public void addBlock(Djinn djinn, int rotation) {
 		if(this.newBlockReady){
-			if (djinn.getSystemTime()-this.lastBlock<20) {
+			if (djinn.getSystemTime()-this.lastBlock<20) { // Game Over State
 				djinn.theWorld.playState = false;
 				djinn.theWorld.readyState = false;
+				
 				djinn.theWorld.endState = true;
+				djinn.theWorld.endChoice = 0;
+				djinn.menuSelector.posY = djinn.menuSelector.defaultPosY;
 			}
 
 			this.currType = this.nextType;
@@ -298,8 +301,8 @@ public class EntityBlockHandler {
 		
 		djinn.textHandler.tetronLevel += 1;
 		if (djinn.theWorld.gameChoice==1) this.speed += 0.2;
-		else if (djinn.theWorld.gameChoice==2) this.speed += 0.1;
-		djinn.thePlayer.width -= 6.0F;
+		else if (djinn.theWorld.gameChoice==2) this.speed += 0.1; // Speed up Tetron
+		djinn.thePlayer.width -= 6.0F; // Add a life
 		
 		for (int i = 0; i < 5; i++) {
 			int randEnemyToRemove = getRandRange(0, djinn.EnemyList.size());

@@ -12,7 +12,7 @@ public class EntityPlayer extends Entity {
 	public EntityPlayer(Djinn djinn) {
 		super(djinn);
 		this.width *= 4F;
-		this.posX = (djinn.displayWidth/2);
+		this.posX = (djinn.displayWidth/2) - this.width/2;
 		this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
 		this.speed *= 1.2F;
 		
@@ -28,16 +28,19 @@ public class EntityPlayer extends Entity {
 		super.onUpdate(djinn);
 		handleInput(djinn);
 		
-		if (this.width == 86.0F) {
+		if (this.width == 86.0F) { // Game Over State
 			djinn.theWorld.playState = false;
 			djinn.theWorld.readyState = false;
+
 			djinn.theWorld.endState = true;
+			djinn.theWorld.endChoice = 0;
+			djinn.menuSelector.posY = djinn.menuSelector.defaultPosY;
 		}
 	}
 
 	private void handleInput(Djinn djinn) {
 		if (!djinn.theWorld.playState) {
-			this.posX = (djinn.displayWidth/2);
+			this.posX = (djinn.displayWidth/2) - this.width/2;
 			this.posY = (djinn.displayHeight/2) - (this.height/2) - 20F;
 			return;
 		}
