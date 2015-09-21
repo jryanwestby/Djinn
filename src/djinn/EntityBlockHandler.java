@@ -39,7 +39,6 @@ public class EntityBlockHandler {
 	public Keybind keyA;
 	public Keybind keyS;
 	public Keybind keyD;
-	public Keybind keyReturn;
 	public Keybind keySpace;
 	public long lastkeyW;
 	public long lastkeyA;
@@ -53,7 +52,6 @@ public class EntityBlockHandler {
 		this.keyA = new Keybind(Keyboard.KEY_A, "Left");
 		this.keyS = new Keybind(Keyboard.KEY_S, "Down");
 		this.keyD = new Keybind(Keyboard.KEY_D, "Right");
-		this.keyReturn = new Keybind(Keyboard.KEY_RETURN, "Return");
 		this.keySpace = new Keybind(Keyboard.KEY_SPACE, "Spacebar");
 				
 		this.width = 28F;
@@ -89,7 +87,9 @@ public class EntityBlockHandler {
 
 	public void addBlock(Djinn djinn, int rotation) {
 		if(this.newBlockReady){
-			if (djinn.getSystemTime()-this.lastBlock<20) { // Game Over State
+			
+			// Game Over if blocks are added too fast, when blocks have filled screen
+			if (djinn.getSystemTime()-this.lastBlock<20) { 
 				djinn.theWorld.playState = false;
 				djinn.theWorld.readyState = false;
 				
@@ -143,6 +143,7 @@ public class EntityBlockHandler {
 			this.motionY = 0;
 			return;
 		}
+		
 		if (djinn.theWorld.keyR.isKeyDown()) {
 			if (djinn.theWorld.gameChoice==1) {
 				this.motionY = -this.speed*2;
@@ -150,12 +151,14 @@ public class EntityBlockHandler {
 		}
 		this.motionX = 0;
 		
+		// W and S rotate block
 		if (this.keyW.isKeyDown() && djinn.getSystemTime()-this.lastkeyW>150) {
 			this.tempBlockRotation = this.currentBlockRotation;
 			this.currentBlockRotation = (this.currentBlockRotation == 0) ? 3 : this.currentBlockRotation-1;
 			this.lastkeyW = djinn.getSystemTime();
 		}
 		
+		// A and D move block left and right
 		if (this.keyA.isKeyDown() && djinn.getSystemTime()-this.lastkeyA>100) {
 			this.tempRefPosX = this.refPosX;
 			this.refPosX -= this.width;
@@ -220,12 +223,6 @@ public class EntityBlockHandler {
 
 			}
 		}
-	}
-	
-	private void doRender(Djinn djinn) {
-		for (int tileNumber = 0; tileNumber < blockList.size(); tileNumber++) {
-			gui.drawRect(blockList.get(tileNumber).x, blockList.get(tileNumber).y, this.width, this.height, 0xFF000000);
-		}		
 	}
 	
 	private boolean checkCollisionWithDivider(Djinn djinn) {
@@ -329,6 +326,12 @@ public class EntityBlockHandler {
 		}
 		
 		this.numBlocks = blockList.size();
+	}
+	
+	private void doRender(Djinn djinn) {
+		for (int tileNumber = 0; tileNumber < blockList.size(); tileNumber++) {
+			gui.drawRect(blockList.get(tileNumber).x, blockList.get(tileNumber).y, this.width, this.height, 0xFF000000);
+		}		
 	}
 	
 	public static int getRandRange(int min, int max) {

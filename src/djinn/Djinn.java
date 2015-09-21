@@ -12,9 +12,9 @@ public class Djinn {
 
 	private static Djinn instance;
 	public String TITLE = "Djinn";
-	public String VERSION = "0.0.1";
+	public String VERSION = "1.0";
 	public int displayWidth = 450;
-	public int displayHeight = 1000;
+	public int displayHeight = 800;
 	public static boolean isRunning = true;
 	
 	// Entity variables
@@ -41,7 +41,7 @@ public class Djinn {
 		
 		// Add enemies
 		for (int row=0;row<8;row++) {
-			for (int col=0;col<5;col++){
+			for (int col=0;col<4;col++){
 				instance.EnemyList.add(new EntityEnemy(instance,instance.displayWidth/8+instance.displayWidth/10*row,70F+40F*col));
 			}
 		}

@@ -99,7 +99,10 @@ public class World {
 		// Win Screen
 		this.winState = djinn.EnemyList.isEmpty();
 		if (this.winState)	{
-
+			
+			this.readyState = false;
+			this.playState = false;
+			
 			djinn.menuSelector.onUpdate(djinn);
 			djinn.textHandler.winText(djinn);
 			
@@ -151,6 +154,7 @@ public class World {
 			if (this.keyReturn.isKeyDown() && djinn.getSystemTime()-this.lastEnter>400) {
 				this.titleState = false;
 				this.readyState = true;
+				djinn.menuSelector.posY = djinn.menuSelector.defaultPosY;
 				
 				this.lastEnter = djinn.getSystemTime();
 			}
@@ -252,7 +256,7 @@ public class World {
 		
 		// Game over screen
 		if (this.endState) {
-
+		
 			djinn.menuSelector.onUpdate(djinn);			
 			djinn.textHandler.endText(djinn);
 			
