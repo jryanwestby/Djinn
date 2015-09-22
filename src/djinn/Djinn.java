@@ -1,5 +1,6 @@
 package djinn;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.lwjgl.LWJGLException;
@@ -28,6 +29,8 @@ public class Djinn {
 	public EntitySelector menuSelector;
 	
 	public static void main(String[] args) {
+		System.setProperty("org.lwjgl.librarypath", new File("lib/natives").getAbsolutePath());
+
 		initEntities();
 		initDisplay();
 		gameLoop();

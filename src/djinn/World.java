@@ -151,7 +151,7 @@ public class World {
 				this.lastkeyUp = djinn.getSystemTime();
 			}
 			
-			if (this.keyReturn.isKeyDown() && djinn.getSystemTime()-this.lastEnter>400) {
+			if (this.keyReturn.isKeyDown() && djinn.getSystemTime()-this.lastEnter>200) {
 				this.titleState = false;
 				this.readyState = true;
 				djinn.menuSelector.posY = djinn.menuSelector.defaultPosY;

@@ -35,12 +35,12 @@ public class TextHandler {
 	}
 	
 	public void pauseText(Djinn djinn) {
-		Color.white.bind();
-
+		Color.white.bind();		
+		
 		// load font from file
 		try {
 			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
-	
+
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			awtFont2 = awtFont2.deriveFont(24f); // set font size
 			pauseFontSm = new TrueTypeFont(awtFont2, antiAlias);
@@ -65,7 +65,7 @@ public class TextHandler {
 		// load font from file
 		try {
 			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
-	
+
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			awtFont2 = awtFont2.deriveFont(24f); // set font size
 			titleFontSm = new TrueTypeFont(awtFont2, antiAlias);
@@ -83,6 +83,8 @@ public class TextHandler {
 		titleFontSm.drawString(160, 450	, "Defender", Color.black);
 		titleFontSm.drawString(160, 500	, "Tetron", Color.black);
 		titleFontSm.drawString(160, 550	, "Djinn", Color.black);
+		
+		titleFontSm.drawString(70, 650, "Use Enter to Select", Color.black);
 	}
 	
 	public void endText(Djinn djinn) {
@@ -90,7 +92,7 @@ public class TextHandler {
 		
 		try {
 			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
-	
+
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			awtFont2 = awtFont2.deriveFont(24f); // set font size
 			endFontSm = new TrueTypeFont(awtFont2, antiAlias);
@@ -113,7 +115,7 @@ public class TextHandler {
 
 		try {
 			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
-	
+
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			awtFont2 = awtFont2.deriveFont(24f); // set font size
 			defenderFont = new TrueTypeFont(awtFont2, antiAlias);
@@ -141,7 +143,7 @@ public class TextHandler {
 		
 		try {
 			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
-	
+
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			awtFont2 = awtFont2.deriveFont(20f); // set font size
 			tetronFont = new TrueTypeFont(awtFont2, antiAlias);
@@ -168,7 +170,7 @@ public class TextHandler {
 		
 		try {
 			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
-	
+
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			awtFont2 = awtFont2.deriveFont(20f); // set font size
 			djinnFont = new TrueTypeFont(awtFont2, antiAlias);
@@ -199,7 +201,7 @@ public class TextHandler {
 		
 		try {
 			InputStream inputStream	= ResourceLoader.getResourceAsStream("joystik.ttf");
-	
+
 			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 			awtFont2 = awtFont2.deriveFont(24f); // set font size
 			winFontSm = new TrueTypeFont(awtFont2, antiAlias);
