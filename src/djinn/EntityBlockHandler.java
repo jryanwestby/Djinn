@@ -268,18 +268,25 @@ public class EntityBlockHandler {
 		this.motionY = -this.speed;
 	}
 	
+	// Check if the HashMap has a key for the height of each of the current blocks
 	private void checkRows(Djinn djinn) {
 		for (int currentBlock = numBlocks-4; currentBlock < blockList.size(); currentBlock++) {
 			int currentRowHeight = blockList.get(currentBlock).y;
 			
+			// If they do, add them to the ArrayList at the currentRowHeight key
 			if (blockHeightMap.containsKey(currentRowHeight)) {
 				blockHeightMap.get(currentRowHeight).add(blockList.get(currentBlock));
 				
+				// Check the size of the ArrayList at the current height,
+				// if it's equal to 16, remove the row of blocks
 				if (blockHeightMap.get(currentRowHeight).size() == 16) {
 					blocksToBeRemoved.addAll(blockHeightMap.get(currentRowHeight));
 					this.removeRowReady = true;
 				}
-			} else {
+			} 
+
+			// If the HashMap doesn't have a key for the current block's height, create it and add the blocks to it
+			else { 
 				blockHeightMap.put(currentRowHeight, new ArrayList<Rectangle>());
 				blockHeightMap.get(currentRowHeight).add(blockList.get(currentBlock));
 			}
